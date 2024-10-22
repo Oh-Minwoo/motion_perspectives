@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
+using System.IO;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
 public class FullJoints : MonoBehaviour
 {
+    public SocketListener socketListener;
     public bool isArmsMotion = true;
     public TextAsset armsMotionCSV;
     public TextAsset armsAndLegsMotionCSV;
@@ -18,6 +20,11 @@ public class FullJoints : MonoBehaviour
     private List<LineRenderer[]> allLines = new List<LineRenderer[]>(); // LineRenderer 참조를 저장할 배열
     private int[] engagedJointList;
     private int[] engagedLineList;
+    private UnixTime unixTime;
+    private string[] timestampRecorder = new string[4];
+    public string subName = "sub01";
+    private string conditionName;
+    private string csvFilePath;
     
     public RealTimePerformanceMeasurement realTimePerformanceMeasurement;
 
@@ -66,6 +73,12 @@ public class FullJoints : MonoBehaviour
 
     void Start()
     {
+        ConditionNameGenerator();
+        FilePathGenerator();
+
+        // 파일 확인 및 생성
+        CheckAndCreateCSV(csvFilePath);
+        
         if (isDiscrete)
         {
             numOfGuidanceOnScreen = 2;
@@ -83,6 +96,48 @@ public class FullJoints : MonoBehaviour
         transperencyArray = CalculateTransparency(numOfGuidanceOnScreen, 0.8f, 0.2f);
         Debug.Log(transperencyArray);
         
+        // for (int i = 0; i < numOfGuidanceOnScreen; i++)
+        // {
+        //     CreateJointsAndConnections(i);
+        // }
+        //
+        // Debug.Log(allJoints.Count);
+        // Debug.Log(allLines.Count);
+        //
+        // MakeObjectsTransparent(allJoints[0], allLines[0], 1.0f);
+        // MakeObjectsTransparent(allJoints[1], allLines[1], 0.1f);
+        //
+        // string str = $"{frameCount}/{jointPositions.Count}";
+        // frameLeft.text = str;
+        //
+        // currentGuidance = allJoints[0];
+        // realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
+        //
+        // dataIdx = numOfGuidanceOnScreen;
+    }
+
+    private void FilePathGenerator()
+    {
+        string csvFileName = $"{subName}_timestamp.csv";
+        csvFilePath = Path.Combine("C:\\Users\\HCIS\\Desktop\\OhMinwoo_Thesis\\theis\\Assets\\Timestamp_res", csvFileName);
+    }
+    
+    private void CheckAndCreateCSV(string path)
+    {
+        if (!File.Exists(path))
+        {
+            // 파일 생성
+            File.WriteAllText(path, "Subject Name, Condition, Action, Unix Time\n"); // 헤더 추가
+            Debug.Log("CSV 파일이 생성되었습니다: " + path);
+        }
+        else
+        {
+            Debug.Log("CSV 파일이 이미 존재합니다: " + path);
+        }
+    }
+
+    public void StartAnimation()
+    {
         for (int i = 0; i < numOfGuidanceOnScreen; i++)
         {
             CreateJointsAndConnections(i);
@@ -102,6 +157,20 @@ public class FullJoints : MonoBehaviour
 
         dataIdx = numOfGuidanceOnScreen;
         
+        socketListener.isGuidanceStart = true;
+
+    }
+
+    private void ConditionNameGenerator()
+    {
+        if (isArmsMotion)
+        {
+            conditionName = "armsMo + fullVis";
+        }
+        else
+        {
+            conditionName = "armsLegsMo + fullVis";
+        }
     }
 
     void ReadCSV(TextAsset csvFile)
@@ -151,14 +220,6 @@ public class FullJoints : MonoBehaviour
         }
 
         return values;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartAnimation();
-        }
     }
 
     void CreateJointsAndConnections(int i)
@@ -360,7 +421,7 @@ public class FullJoints : MonoBehaviour
         dataIdx++;
     }
 
-    public void StartAnimation()
+    public void UpdateAnimation()
     {
         if (dataIdx <= jointPositions.Count-1)
         {
@@ -369,6 +430,7 @@ public class FullJoints : MonoBehaviour
         else
         {
             Debug.Log("Motion is over");
+            TimestampRecording("end");
         }
     }
 
@@ -405,53 +467,32 @@ public class FullJoints : MonoBehaviour
             }
         }
     }
-    
-    
-    /*void MakeObjectsTransparent(GameObject[] jointObjects, LineRenderer[] lineRenderers, float transparency) // 투명도 값 (0 = 완전 투명, 1 = 불투명)
+
+    public void TimestampRecording(string startOrEnd)
     {
-        // 모든 조인트 오브젝트의 material 투명도 조정
-        foreach (GameObject jointObj in jointObjects)
-        {
-            Renderer renderer = jointObj.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                Material material = renderer.material;
-                Color color = material.color;
-                color.a = transparency;
-                material.color = color;
+        timestampRecorder = new string[4];
+        unixTime = GetComponent<UnixTime>();
+        string currentTime = unixTime.GetCurrentUnixTime();
+        timestampRecorder[0] = subName;
+        timestampRecorder[1] = conditionName;
+        timestampRecorder[2] = startOrEnd;
+        timestampRecorder[3] = currentTime;
+        WriteToCSV(csvFilePath, timestampRecorder);
+    }
+    
+    private void WriteToCSV(string path, string[] data)
+    {
+        // 데이터를 쉼표로 구분하여 한 줄로 만듭니다.
+        string newLine = string.Join(",", data);
 
-                // Alpha blending 설정
-                material.SetFloat("_Mode", 3);
-                material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                material.SetInt("_ZWrite", 0);
-                material.DisableKeyword("_ALPHATEST_ON");
-                material.EnableKeyword("_ALPHABLEND_ON");
-                material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                material.renderQueue = 3000;
-            }
+        // 파일에 추가 모드로 쓰기
+        using (StreamWriter sw = new StreamWriter(path, append: true))
+        {
+            sw.WriteLine(newLine);
         }
 
-        // 모든 라인 렌더러의 material 투명도 조정
-
-        foreach (LineRenderer line in lineRenderers)
-        {
-            Material material = line.material;
-            Color color = material.color;
-            color.a = transparency;
-            material.color = color;
-
-            // Alpha blending 설정
-            material.SetFloat("_Mode", 3);
-            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            material.SetInt("_ZWrite", 0);
-            material.DisableKeyword("_ALPHATEST_ON");
-            material.EnableKeyword("_ALPHABLEND_ON");
-            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            material.renderQueue = 3000;
-        }
-    }*/
+        Debug.Log("CSV 파일에 데이터가 추가되었습니다: " + csvFilePath);
+    }
     
     
 }

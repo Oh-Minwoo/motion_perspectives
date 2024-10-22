@@ -1516,7 +1516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b45b5f993442f0447944f6787ce3bee7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  csvFile: {fileID: 4900000, guid: 31789f22d8d1acb40b453497119070e6, type: 3}
+  csvFile: {fileID: 4900000, guid: c329bd7c0a36bf24987aac26cc1d5e48, type: 3}
   positionOffsets: {x: -100, y: 1, z: 0}
   UpdateSeconds: 0.01
 --- !u!1001 &1507525783

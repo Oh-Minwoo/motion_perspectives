@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
+using System.IO;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
 public class ArmsGuidance : MonoBehaviour
 {
+    public SocketListener socketListener;
     public bool isArmsMotion = true;
     public TextAsset armsMotionCSV;
     public TextAsset armsAndLegsMotionCSV;
@@ -17,6 +19,11 @@ public class ArmsGuidance : MonoBehaviour
     private List<List<LineRenderer[]>> allLines = new List<List<LineRenderer[]>>(); // LineRenderer 참조를 저장할 배열
     private int[] engagedJointList;
     private int[] engagedLineList;
+    private UnixTime unixTime;
+    private string[] timestampRecorder = new string[4];
+    public string subName = "sub01";
+    private string conditionName;
+    private string csvFilePath;
     
     public RealTimePerformanceMeasurement realTimePerformanceMeasurement;
 
@@ -56,6 +63,12 @@ public class ArmsGuidance : MonoBehaviour
 
     void Start()
     {
+        ConditionNameGenerator();
+        FilePathGenerator();
+
+        // 파일 확인 및 생성
+        CheckAndCreateCSV(csvFilePath);
+        
         if (isDiscrete)
         {
             numOfGuidanceOnScreen = 2;
@@ -77,11 +90,54 @@ public class ArmsGuidance : MonoBehaviour
         transperancyArray = CalculateTransparency(numOfGuidanceOnScreen, 0.8f, 0.2f);
         Debug.Log(transperancyArray);
         
+        // for (int i = 0; i < numOfGuidanceOnScreen; i++)
+        // {
+        //     CreateJointsAndConnections(i);
+        // }
+        //
+        // MakeObjectsTransparent(allJoints[0], allLines[0], 1.0f);
+        // MakeObjectsTransparent(allJoints[1], allLines[1], 0.1f);
+        //
+        // string str = $"{frameCount}/{jointPositions.Count}";
+        // frameLeft.text = str;
+        //
+        // currentGuidance = allJoints[0];
+        // realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
+        //
+        // dataIdx = numOfGuidanceOnScreen;
+        
+    }
+    
+    private void FilePathGenerator()
+    {
+        string csvFileName = $"{subName}_timestamp.csv";
+        csvFilePath = Path.Combine("C:\\Users\\HCIS\\Desktop\\OhMinwoo_Thesis\\theis\\Assets\\Timestamp_res", csvFileName);
+    }
+    
+    private void CheckAndCreateCSV(string path)
+    {
+        if (!File.Exists(path))
+        {
+            // 파일 생성
+            File.WriteAllText(path, "Subject Name, Condition, Action, Unix Time\n"); // 헤더 추가
+            Debug.Log("CSV 파일이 생성되었습니다: " + path);
+        }
+        else
+        {
+            Debug.Log("CSV 파일이 이미 존재합니다: " + path);
+        }
+    }
+
+    public void StartAnimation()
+    {
         for (int i = 0; i < numOfGuidanceOnScreen; i++)
         {
             CreateJointsAndConnections(i);
         }
-        
+
+        Debug.Log(allJoints.Count);
+        Debug.Log(allLines.Count);
+
         MakeObjectsTransparent(allJoints[0], allLines[0], 1.0f);
         MakeObjectsTransparent(allJoints[1], allLines[1], 0.1f);
 
@@ -93,6 +149,19 @@ public class ArmsGuidance : MonoBehaviour
 
         dataIdx = numOfGuidanceOnScreen;
         
+        socketListener.isGuidanceStart = true;
+    }
+
+    private void ConditionNameGenerator()
+    {
+        if (isArmsMotion)
+        {
+            conditionName = "armsMo + fullVis";
+        }
+        else
+        {
+            conditionName = "armsLegsMo + fullVis";
+        }
     }
 
     void ReadCSV(int[] joints, TextAsset csvFile)
@@ -309,7 +378,7 @@ public class ArmsGuidance : MonoBehaviour
         dataIdx++;
     }
 
-    public void StartAnimation()
+    public void UpdateAnimation()
     {
         if (dataIdx <= jointPositions.Count-1)
         {
@@ -318,6 +387,7 @@ public class ArmsGuidance : MonoBehaviour
         else
         {
             Debug.Log("Motion is over");
+            TimestampRecording("end");
         }
     }
     
@@ -357,6 +427,31 @@ public class ArmsGuidance : MonoBehaviour
                 }
             }
         }
+    }
+    public void TimestampRecording(string startOrEnd)
+    {
+        timestampRecorder = new string[4];
+        unixTime = GetComponent<UnixTime>();
+        string currentTime = unixTime.GetCurrentUnixTime();
+        timestampRecorder[0] = subName;
+        timestampRecorder[1] = conditionName;
+        timestampRecorder[2] = startOrEnd;
+        timestampRecorder[3] = currentTime;
+        WriteToCSV(csvFilePath, timestampRecorder);
+    }
+    
+    private void WriteToCSV(string path, string[] data)
+    {
+        // 데이터를 쉼표로 구분하여 한 줄로 만듭니다.
+        string newLine = string.Join(",", data);
+
+        // 파일에 추가 모드로 쓰기
+        using (StreamWriter sw = new StreamWriter(path, append: true))
+        {
+            sw.WriteLine(newLine);
+        }
+
+        Debug.Log("CSV 파일에 데이터가 추가되었습니다: " + csvFilePath);
     }
     
     

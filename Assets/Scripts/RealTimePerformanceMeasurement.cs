@@ -77,18 +77,18 @@ public class RealTimePerformanceMeasurement : MonoBehaviour
             if (conditionSelector.arms)
             {
                 ArmsGuidance armsGuidance = (ArmsGuidance)activeScript;
-                armsGuidance.StartAnimation();
+                armsGuidance.UpdateAnimation();
             }
             if (conditionSelector.armsAndLegs)
             {
                 ArmsAndLegsGuidance armsAndLegsGuidance = (ArmsAndLegsGuidance)activeScript;
-                armsAndLegsGuidance.StartAnimation(); 
+                armsAndLegsGuidance.UpdateAnimation(); 
             }
 
             if (conditionSelector.fullBody)
             {
                 FullJoints fullJoints = (FullJoints)activeScript;
-                fullJoints.StartAnimation();
+                fullJoints.UpdateAnimation();
             }
         }
     }

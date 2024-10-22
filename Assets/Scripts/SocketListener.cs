@@ -16,6 +16,7 @@ public class SocketListener : MonoBehaviour
     private UdpClient udpClient;
     private IPEndPoint remoteEndPoint;
     private List<float> receivedDataList = new List<float>();
+    [HideInInspector] public bool isGuidanceStart = false;
 
     private GameObject[] jointObjects;
 
@@ -76,6 +77,7 @@ public class SocketListener : MonoBehaviour
     
     void Start()
     {
+        isGuidanceStart = false;
         udpClient = new UdpClient(5005);
         remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
@@ -163,14 +165,20 @@ public class SocketListener : MonoBehaviour
                             
                 // 첫 번째 데이터는 A 함수에서 처리
                 CreateJointsAndConnections(jointList);
-                realTimePerformanceMeasurement.GetJointPos(jointObjects);
+                if (isGuidanceStart)
+                {
+                    realTimePerformanceMeasurement.GetJointPos(jointObjects);
+                }
                 firstDataProcessed = true;  // 첫 번째 데이터 처리 완료 표시
             }
             else
             {
                 // 이후 데이터는 B 함수에서 처리
                 UpdateJointsPositions(jointList);
-                realTimePerformanceMeasurement.GetJointPos(jointObjects);
+                if (isGuidanceStart)
+                {
+                    realTimePerformanceMeasurement.GetJointPos(jointObjects);
+                }
             }
             
         }
