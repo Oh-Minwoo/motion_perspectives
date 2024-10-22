@@ -293,7 +293,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   positionOffset: {x: -100, y: 1, z: 0}
-  subNum: guide
+  subNum: sub100
 --- !u!1 &718944584
 GameObject:
   m_ObjectHideFlags: 0

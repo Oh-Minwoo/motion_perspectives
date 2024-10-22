@@ -497,7 +497,7 @@ MonoBehaviour:
     armsAndLegs: 0
     fullBody: 1
   guidanceObject: {fileID: 1284655725}
-  threshold: 1
+  threshold: 0.8
 --- !u!1 &231105042
 GameObject:
   m_ObjectHideFlags: 0
@@ -1078,10 +1078,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   socketListener: {fileID: 238803215}
   isArmsMotion: 1
-  armsMotionCSV: {fileID: 4900000, guid: c329bd7c0a36bf24987aac26cc1d5e48, type: 3}
-  armsAndLegsMotionCSV: {fileID: 4900000, guid: 31789f22d8d1acb40b453497119070e6, type: 3}
+  armsMotionCSV: {fileID: 4900000, guid: 0f4861ce9f2d819429e51198486f4d02, type: 3}
+  armsAndLegsMotionCSV: {fileID: 4900000, guid: a7e1530f47c92de479d1d8f5110a5a1b, type: 3}
   currentGuidance: []
-  subName: sub01
+  subName: sub100
   realTimePerformanceMeasurement: {fileID: 223901621}
   frameLeft: {fileID: 142952296}
   positionOffset: {x: -100, y: 1, z: 0}
@@ -1104,11 +1104,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   socketListener: {fileID: 238803215}
-  isArmsMotion: 0
-  armsMotionCSV: {fileID: 4900000, guid: 31789f22d8d1acb40b453497119070e6, type: 3}
-  armsAndLegsMotionCSV: {fileID: 4900000, guid: c329bd7c0a36bf24987aac26cc1d5e48, type: 3}
+  isArmsMotion: 1
+  armsMotionCSV: {fileID: 4900000, guid: 0f4861ce9f2d819429e51198486f4d02, type: 3}
+  armsAndLegsMotionCSV: {fileID: 4900000, guid: a7e1530f47c92de479d1d8f5110a5a1b, type: 3}
   currentGuidance: []
-  subName: sub01
+  subName: sub100
   realTimePerformanceMeasurement: {fileID: 223901621}
   frameLeft: {fileID: 142952296}
   positionOffset: {x: -100, y: 1, z: 0}
@@ -1132,10 +1132,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   socketListener: {fileID: 238803215}
   isArmsMotion: 1
-  armsMotionCSV: {fileID: 4900000, guid: c329bd7c0a36bf24987aac26cc1d5e48, type: 3}
-  armsAndLegsMotionCSV: {fileID: 4900000, guid: 31789f22d8d1acb40b453497119070e6, type: 3}
+  armsMotionCSV: {fileID: 4900000, guid: 0f4861ce9f2d819429e51198486f4d02, type: 3}
+  armsAndLegsMotionCSV: {fileID: 4900000, guid: a7e1530f47c92de479d1d8f5110a5a1b, type: 3}
   currentGuidance: []
-  subName: sub01
+  subName: sub100
   realTimePerformanceMeasurement: {fileID: 223901621}
   frameLeft: {fileID: 142952296}
   positionOffset: {x: -100, y: 1, z: 0}

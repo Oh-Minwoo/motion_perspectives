@@ -493,6 +493,9 @@ public class FullJoints : MonoBehaviour
 
         Debug.Log("CSV 파일에 데이터가 추가되었습니다: " + csvFilePath);
     }
-    
-    
+
+    private void OnApplicationQuit()
+    {
+        TimestampRecording("failed");
+    }
 }
