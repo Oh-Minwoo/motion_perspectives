@@ -9,10 +9,11 @@ using static UnityEngine.GraphicsBuffer;
 
 public class ArmsGuidance : MonoBehaviour
 {
+    private GuidanceVisualization guidanceVisualization;
     public SocketListener socketListener;
-    public bool isArmsMotion = true;
-    public TextAsset armsMotionCSV;
-    public TextAsset armsAndLegsMotionCSV;
+    private bool isArmsMotion = false;
+    private TextAsset armsMotionCSV;
+    private TextAsset armsAndLegsMotionCSV;
     private List<Vector3[]> jointPositions = new List<Vector3[]>();
     private List<GameObject[]> allJoints = new List<GameObject[]>();
     [HideInInspector] public GameObject[] currentGuidance;
@@ -63,6 +64,10 @@ public class ArmsGuidance : MonoBehaviour
 
     void Start()
     {
+        guidanceVisualization = GetComponent<GuidanceVisualization>();
+        isArmsMotion = guidanceVisualization.RangeOfMotion.arms;
+        armsMotionCSV = guidanceVisualization.armsMotionCSV;
+        armsAndLegsMotionCSV = guidanceVisualization.armsAndLegsMotionCSV;
         ConditionNameGenerator();
         FilePathGenerator();
 

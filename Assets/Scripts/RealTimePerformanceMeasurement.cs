@@ -7,16 +7,10 @@ using System.Linq;
 
 
 [Serializable]
-public struct NamedBools
-{
-    public bool arms;
-    public bool armsAndLegs;
-    public bool fullBody;
-}
 
 public class RealTimePerformanceMeasurement : MonoBehaviour
 {
-    public NamedBools conditionSelector;
+    public GuidanceVisualization guidanceVisualization;
     public GameObject guidanceObject;
     [SerializeField] private float threshold = 0.1f;
     
@@ -28,28 +22,29 @@ public class RealTimePerformanceMeasurement : MonoBehaviour
     private List<Vector3> currentJoint = new List<Vector3>();
     private int[] engagedJointList;
     
-    void Start()
+    void Update()
     {
-        MonoBehaviour[] scripts = guidanceObject.GetComponents<MonoBehaviour>();
-        activeScript = scripts.FirstOrDefault(script => script.enabled);
-        if (activeScript is ArmsGuidance)
+        if (guidanceVisualization.isEnabled)
         {
-            conditionSelector.arms = true;
-            guidanceJointPos = new Vector3[6];
-            engagedJointList = new int[] { 14, 15, 16, 18, 19, 20 };
-        }
-        if (activeScript is ArmsAndLegsGuidance)
-        {
-            conditionSelector.armsAndLegs = true;
-            guidanceJointPos = new Vector3[12];
-            engagedJointList = new int[] { 1, 2, 3, 4, 5, 6, 14, 15, 16, 18, 19, 20 };
-        }
+            MonoBehaviour[] scripts = guidanceObject.GetComponents<MonoBehaviour>();
+            activeScript = scripts.FirstOrDefault(script => script.enabled);
+            if (activeScript is ArmsGuidance)
+            {
+                guidanceJointPos = new Vector3[6];
+                engagedJointList = new int[] { 14, 15, 16, 18, 19, 20 };
+            }
+            if (activeScript is ArmsAndLegsGuidance)
+            {
+                guidanceJointPos = new Vector3[12];
+                engagedJointList = new int[] { 1, 2, 3, 4, 5, 6, 14, 15, 16, 18, 19, 20 };
+            }
 
-        if (activeScript is FullJoints)
-        {
-            conditionSelector.fullBody = true;
-            guidanceJointPos = new Vector3[21];
-            engagedJointList = Enumerable.Range(0, 21).ToArray();
+            if (activeScript is FullJoints)
+            {
+                guidanceJointPos = new Vector3[21];
+                engagedJointList = Enumerable.Range(0, 21).ToArray();
+            }
+            guidanceVisualization.isEnabled = false;
         }
     }
 
@@ -74,18 +69,18 @@ public class RealTimePerformanceMeasurement : MonoBehaviour
         Debug.Log("distance: " + distance);
         if (distance < threshold)
         {
-            if (conditionSelector.arms)
+            if (guidanceVisualization.RangeOfVisulization.arms)
             {
                 ArmsGuidance armsGuidance = (ArmsGuidance)activeScript;
                 armsGuidance.UpdateAnimation();
             }
-            if (conditionSelector.armsAndLegs)
+            if (guidanceVisualization.RangeOfVisulization.armsAndLegs)
             {
                 ArmsAndLegsGuidance armsAndLegsGuidance = (ArmsAndLegsGuidance)activeScript;
                 armsAndLegsGuidance.UpdateAnimation(); 
             }
 
-            if (conditionSelector.fullBody)
+            if (guidanceVisualization.RangeOfVisulization.fullBody)
             {
                 FullJoints fullJoints = (FullJoints)activeScript;
                 fullJoints.UpdateAnimation();
