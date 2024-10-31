@@ -11,33 +11,30 @@ public class ArmsAndLegsGuidance : MonoBehaviour
 {
     private GuidanceVisualization guidanceVisualization;
     public SocketListener socketListener;
-    private bool isArmsMotion = false;
-    private TextAsset armsMotionCSV;
-    private TextAsset armsAndLegsMotionCSV;
+    private bool isBadminton = false;
+    private bool isDemo;
+    private TextAsset badmintonCSV;
+    private TextAsset taichiCSV;
     private List<Vector3[]> jointPositions = new List<Vector3[]>();
     private List<GameObject[]> allJoints = new List<GameObject[]>();
     [HideInInspector] public GameObject[] currentGuidance;
     private List<List<LineRenderer[]>> allLines = new List<List<LineRenderer[]>>(); // LineRenderer 참조를 저장할 배열
     private int[] engagedJointList;
     private int[] engagedLineList;
-    private UnixTime unixTime;
-    private string[] timestampRecorder = new string[4];
-    public string subName = "sub01";
-    private string conditionName;
-    private string csvFilePath;
+
     
     public RealTimePerformanceMeasurement realTimePerformanceMeasurement;
 
-    public TMP_Text frameLeft;
-    private int frameCount = 1;
+    public TMP_Text textUI;
+    private int frameCount = 0;
     private float[] transperancyArray;
     public Vector3 positionOffset = new Vector3(-100f, 1f, 0f);
     public Color color;
 
     [SerializeField] private float percentage = 0.3f; // 0~1 사이의 값
     [SerializeField] private int numOfGuidanceOnScreen = 5; // Continuous guidance에서 한 화면에 보여질 guidance 개수
-    [SerializeField] private bool isDiscrete = true;
-    [SerializeField] private float transparency = 0.5f;
+    // [SerializeField] private bool isDiscrete = true;
+    // [SerializeField] private float transparency = 0.5f;
 
     private int dataIdx;
 
@@ -68,6 +65,11 @@ public class ArmsAndLegsGuidance : MonoBehaviour
         {9, 10}, // LeftArm to LeftForeArm
         {10, 11}, // LeftForeArm to LeftHand
     };
+    
+    // private int[,] headHierarchy =
+    // {
+    //     {12, 13} //Neck1 to Head
+    // };
 
     private int[][,] jointHierarchy;
     
@@ -77,20 +79,15 @@ public class ArmsAndLegsGuidance : MonoBehaviour
     void OnEnable()
     {
         guidanceVisualization = GetComponent<GuidanceVisualization>();
-        isArmsMotion = guidanceVisualization.RangeOfMotion.arms;
-        armsMotionCSV = guidanceVisualization.armsMotionCSV;
-        armsAndLegsMotionCSV = guidanceVisualization.armsAndLegsMotionCSV;
-        ConditionNameGenerator();
-        FilePathGenerator();
-
-        // 파일 확인 및 생성
-        CheckAndCreateCSV(csvFilePath);
+        isBadminton = guidanceVisualization.TypeOfMotion.badminton;
+        badmintonCSV = guidanceVisualization.badmintonCSV;
+        taichiCSV = guidanceVisualization.taichiCSV;
         
-        if (isDiscrete)
-        {
-            numOfGuidanceOnScreen = 2;
-        }
-        engagedJointList = new int[] { 1, 2, 3, 4, 5, 6, 14, 15, 16, 18, 19, 20 };
+        // if (isDiscrete)
+        // {
+        //     numOfGuidanceOnScreen = 2;
+        // }
+        engagedJointList = new int[] { 1, 2, 3, 4, 5, 6, 14, 15, 16, 18, 19, 20};
         jointHierarchy = new int[][,]
         {
             rightLegHierarchy,
@@ -98,69 +95,25 @@ public class ArmsAndLegsGuidance : MonoBehaviour
             rightArmHierarchy,
             leftArmHierarchy
         };
-        if (isArmsMotion)
+        if (isBadminton)
         {
-            ReadCSV(engagedJointList, armsMotionCSV);
+            ReadCSV(engagedJointList, badmintonCSV);
         }
         else
         {
-            ReadCSV(engagedJointList, armsAndLegsMotionCSV);
+            ReadCSV(engagedJointList, taichiCSV);
         }
-        transperancyArray = CalculateTransparency(numOfGuidanceOnScreen, 0.8f, 0.2f);
-        Debug.Log(transperancyArray);
-        
-        // for (int i = 0; i < numOfGuidanceOnScreen; i++)
-        // {
-        //     CreateJointsAndConnections(i);
-        // }
-        //
-        // MakeObjectsTransparent(allJoints[0], allLines[0], 1.0f);
-        // MakeObjectsTransparent(allJoints[1], allLines[1], 0.1f);
-        //
-        // string str = $"{frameCount}/{jointPositions.Count}";
-        // frameLeft.text = str;
-        //
-        // currentGuidance = allJoints[0];
-        // realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
-        //
-        // dataIdx = numOfGuidanceOnScreen;
-        
-    }
-    private void FilePathGenerator()
-    {
-        string csvFileName = $"{subName}_timestamp.csv";
-        csvFilePath = Path.Combine("C:\\Users\\HCIS\\Desktop\\OhMinwoo_Thesis\\theis\\Assets\\Timestamp_res", csvFileName);
-    }
-    
-    private void CheckAndCreateCSV(string path)
-    {
-        if (!File.Exists(path))
-        {
-            // 파일 생성
-            File.WriteAllText(path, "Subject Name, Condition, Action, Unix Time\n"); // 헤더 추가
-            Debug.Log("CSV 파일이 생성되었습니다: " + path);
-        }
-        else
-        {
-            Debug.Log("CSV 파일이 이미 존재합니다: " + path);
-        }
+        // transperancyArray = CalculateTransparency(numOfGuidanceOnScreen, 0.8f, 0.2f);
+        // Debug.Log(transperancyArray);
     }
 
-    public void StartAnimation()
+    public void StartAnimation(bool isDemonstration)
     {
+        isDemo = isDemonstration;
         for (int i = 0; i < numOfGuidanceOnScreen; i++)
         {
             CreateJointsAndConnections(i);
         }
-
-        Debug.Log(allJoints.Count);
-        Debug.Log(allLines.Count);
-
-        MakeObjectsTransparent(allJoints[0], allLines[0], 1.0f);
-        MakeObjectsTransparent(allJoints[1], allLines[1], 0.1f);
-
-        string str = $"{frameCount}/{jointPositions.Count}";
-        frameLeft.text = str;
 
         currentGuidance = allJoints[0];
         realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
@@ -168,27 +121,64 @@ public class ArmsAndLegsGuidance : MonoBehaviour
         dataIdx = numOfGuidanceOnScreen;
 
         socketListener.isGuidanceStart = true;
+        StartCoroutine(Countdown(3f));
     }
-
-    private void ConditionNameGenerator()
+    
+    IEnumerator Countdown(float countdownTime)
     {
-        if (isArmsMotion)
+        float remainingTime = countdownTime;
+
+        while (remainingTime > 0)
         {
-            conditionName = "armsMo + fullVis";
+            remainingTime -= Time.deltaTime;
+            if (remainingTime <= countdownTime & remainingTime > 2)
+            {
+                string count = $"3";
+                textUI.text = count;
+            }
+            else if (remainingTime <= 2 & remainingTime > 1)
+            {
+                string count = $"2";
+                textUI.text = count;
+            }
+            else if (remainingTime <= 1 & remainingTime > 0)
+            {
+                string count = $"1";
+                textUI.text = count;
+            }
+            yield return null; // 다음 프레임까지 대기
         }
-        else
+        if (guidanceVisualization.updateMethods.autonomous)
         {
-            conditionName = "armsLegsMo + fullVis";
+            string count = $"Start!";
+            textUI.text = count;
+            StartCoroutine(Countdown1s());
+            StartCoroutine(UpdateAutomously(guidanceVisualization.speed));
+            if (!isDemo)
+            {
+                guidanceVisualization.TimestampRecording("start", -1);
+            }
         }
     }
+    
+    IEnumerator Countdown1s()
+    {
+        float remainingTime = 1f;
 
+        while (remainingTime > 0)
+        {
+            remainingTime -= Time.deltaTime;
+            yield return null; // 다음 프레임까지 대기
+        }
+
+        textUI.text = "";
+    }
+    
     void ReadCSV(int[] joints, TextAsset csvFile)
     {
         string[] lines = csvFile.text.Split('\n');
         dataLength = lines.Length;
-        Debug.Log(dataLength);
-        int gap = (int)System.Math.Truncate((dataLength / (dataLength * percentage)));
-        for (int i=gap; i<dataLength; i += gap)
+        for (int i=0; i<dataLength; i++)
         {
             if (string.IsNullOrWhiteSpace(lines[i])) continue;
 
@@ -204,40 +194,32 @@ public class ArmsAndLegsGuidance : MonoBehaviour
             
             jointPositions.Add(positions);
         }
-        Debug.Log(jointPositions.Count);
     }
     
-    float[] CalculateTransparency(int count, float start, float end)
-    {
-        // 배열 생성
-        float[] values = new float[count];
-        
-        // 로그 기반 비율 계산 (지수 함수를 사용하기 위한 log 변환)
-        float logStart = Mathf.Log(start);
-        float logEnd = Mathf.Log(end);
-        
-        // x축 간격 계산 (0 ~ 1 사이에서 일정한 간격)
-        float step = start / (count - 1);
-
-        // 지수 함수에 따라 값 생성
-        for (int i = 0; i < count; i++)
-        {
-            // x축을 일정한 간격으로 이동시키고, 그에 맞는 y값(지수적)을 계산
-            float t = i * step;
-            float logValue = Mathf.Lerp(logStart, logEnd, t);
-            values[i] = Mathf.Exp(logValue);
-        }
-
-        return values;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartAnimation();
-        }
-    }
+    // float[] CalculateTransparency(int count, float start, float end)
+    // {
+    //     // 배열 생성
+    //     float[] values = new float[count];
+    //     
+    //     // 로그 기반 비율 계산 (지수 함수를 사용하기 위한 log 변환)
+    //     float logStart = Mathf.Log(start);
+    //     float logEnd = Mathf.Log(end);
+    //     
+    //     // x축 간격 계산 (0 ~ 1 사이에서 일정한 간격)
+    //     float step = start / (count - 1);
+    //
+    //     // 지수 함수에 따라 값 생성
+    //     for (int i = 0; i < count; i++)
+    //     {
+    //         // x축을 일정한 간격으로 이동시키고, 그에 맞는 y값(지수적)을 계산
+    //         float t = i * step;
+    //         float logValue = Mathf.Lerp(logStart, logEnd, t);
+    //         values[i] = Mathf.Exp(logValue);
+    //     }
+    //
+    //     return values;
+    // }
+    
 
     void CreateJointsAndConnections(int i)
     {
@@ -357,8 +339,8 @@ public class ArmsAndLegsGuidance : MonoBehaviour
         }
         realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
         
-        string str = $"{++frameCount}/{jointPositions.Count}";
-        frameLeft.text = str;
+        // string str = $"{++frameCount}/{jointPositions.Count}";
+        // textUI.text = str;
         
         // GameObject[] jointObjects = new GameObject[positions.Length];
         // List<LineRenderer[]> lineRenderers = new List<LineRenderer[]>(jointHierarchy.Length); // LineRenderer 객체 배열 초기화
@@ -391,86 +373,147 @@ public class ArmsAndLegsGuidance : MonoBehaviour
         }
         allLines.Add(tempLines);
         
-        MakeObjectsTransparent(allJoints[0], allLines[0], 1.0f);
-        MakeObjectsTransparent(allJoints[1], allLines[1], 0.1f);
+        // MakeObjectsTransparent(allJoints[0], allLines[0], 1.0f);
+        // MakeObjectsTransparent(allJoints[1], allLines[1], 0.1f);
         dataIdx++;
+    }
+    
+    public IEnumerator UpdateAutomously(float speed)
+    {
+        float duration = (1 / guidanceVisualization.frameRate) * jointPositions.Count * (1 / speed);
+        float durationForOneFrame = duration / jointPositions.Count;
+        while (true)
+        {
+            if (dataIdx <= jointPositions.Count - 1)
+            {
+                UpdateJointsPositions();
+            }
+            // else if (dataIdx > jointPositions.Count - 1 && frameCount < dataIdx-1)
+            // {
+            //     UpdateWithoutAppending();
+            // }
+            else
+            {
+                string str = "동작이\n종료되었습니다.";
+                textUI.text = str;
+                guidanceVisualization.isMotionDone = true;
+                Debug.Log("Motion is over");
+                if (!isDemo)
+                {
+                    guidanceVisualization.TimestampRecording("end", -1);   
+                }
+                yield break;
+            }
+            yield return new WaitForSeconds(durationForOneFrame);
+        }
+        
+    }
+    
+    private void UpdateWithoutAppending()
+    {
+        foreach (var joint in allJoints[0])
+        {
+            Destroy(joint);
+        }
+        
+        foreach (var lines in allLines[0])
+        {
+            foreach (var line in lines)
+            {
+                Destroy(line);
+            }
+        }
+        
+        allJoints.RemoveAt(0);
+        allLines.RemoveAt(0);
+        
+        string str = $"{++frameCount}/{jointPositions.Count}";
+        textUI.text = str;
+        
+        // MakeObjectsTransparent(allJoints[0], allLines[0], 1.0f);
     }
 
     public void UpdateAnimation()
     {
-        if (dataIdx <= jointPositions.Count-1)
+        if (dataIdx <= jointPositions.Count - 1 && frameCount < dataIdx-1)
         {
             UpdateJointsPositions();
         }
+        else if (dataIdx > jointPositions.Count - 1 && frameCount < dataIdx-1)
+        {
+            UpdateWithoutAppending();
+        }
         else
         {
+            string str = "Task is over. Please take off the HMD";
+            textUI.text = str;
+            guidanceVisualization.isMotionDone = true;
             Debug.Log("Motion is over");
-            TimestampRecording("end");
+            guidanceVisualization.TimestampRecording("end", -1);
         }
     }
     
-    
-    void MakeObjectsTransparent(GameObject[] jointObjects, List<LineRenderer[]> lineRenderers, float transparency) // 투명도 값 (0 = 완전 투명, 1 = 불투명)
+    public void ResetJoints()
     {
-        // 모든 조인트 오브젝트의 material 투명도 조정
-        foreach (GameObject jointObj in jointObjects)
+        dataIdx = numOfGuidanceOnScreen;
+        foreach (var joints in allJoints)
         {
-            Renderer renderer = jointObj.GetComponent<Renderer>();
-            if (renderer != null)
+            for (int i = 0; i < joints.GetLength(0); i++)
             {
-                Color currentColor = renderer.material.color;
-                currentColor.a = transparency; // 50% 투명
-                renderer.material.color = currentColor;
+                Destroy(joints[i]);
             }
         }
 
-        // 모든 라인 렌더러의 material 투명도 조정
-        foreach (LineRenderer[] lineRenderer in lineRenderers)
+        foreach (var lines in allLines)
         {
-            foreach (LineRenderer line in lineRenderer)
+            foreach (var line in lines)
             {
-                if (line != null)
+                for (int i = 0; i < line.GetLength(0); i++)
                 {
-                    // Start Color와 End Color에서 알파 값을 설정하여 투명도 적용
-                    Color startCol = line.startColor;
-                    startCol.a = Mathf.Clamp01(transparency); // 원하는 투명도 설정
-                    line.startColor = startCol;
-
-                    Color endCol = line.endColor;
-                    endCol.a = Mathf.Clamp01(transparency); // 원하는 투명도 설정
-                    line.endColor = endCol;
-
-                    // Material이 제대로 적용되었는지 확인 (Particles/Standard Unlit 사용)
-                    line.material.renderQueue = 3000; // Transparent 렌더링 순서 보장
+                    Destroy(line[i]);
                 }
             }
         }
-    }
-    public void TimestampRecording(string startOrEnd)
-    {
-        timestampRecorder = new string[4];
-        unixTime = GetComponent<UnixTime>();
-        string currentTime = unixTime.GetCurrentUnixTime();
-        timestampRecorder[0] = subName;
-        timestampRecorder[1] = conditionName;
-        timestampRecorder[2] = startOrEnd;
-        timestampRecorder[3] = currentTime;
-        WriteToCSV(csvFilePath, timestampRecorder);
-    }
-    
-    private void WriteToCSV(string path, string[] data)
-    {
-        // 데이터를 쉼표로 구분하여 한 줄로 만듭니다.
-        string newLine = string.Join(",", data);
-
-        // 파일에 추가 모드로 쓰기
-        using (StreamWriter sw = new StreamWriter(path, append: true))
-        {
-            sw.WriteLine(newLine);
-        }
-
-        Debug.Log("CSV 파일에 데이터가 추가되었습니다: " + csvFilePath);
+        allJoints = new List<GameObject[]>();
+        allLines = new List<List<LineRenderer[]>>();
+        textUI.text = "";
     }
     
     
+    // void MakeObjectsTransparent(GameObject[] jointObjects, List<LineRenderer[]> lineRenderers, float transparency) // 투명도 값 (0 = 완전 투명, 1 = 불투명)
+    // {
+    //     // 모든 조인트 오브젝트의 material 투명도 조정
+    //     foreach (GameObject jointObj in jointObjects)
+    //     {
+    //         Renderer renderer = jointObj.GetComponent<Renderer>();
+    //         if (renderer != null)
+    //         {
+    //             Color currentColor = renderer.material.color;
+    //             currentColor.a = transparency; // 50% 투명
+    //             renderer.material.color = currentColor;
+    //         }
+    //     }
+    //
+    //     // 모든 라인 렌더러의 material 투명도 조정
+    //     foreach (LineRenderer[] lineRenderer in lineRenderers)
+    //     {
+    //         foreach (LineRenderer line in lineRenderer)
+    //         {
+    //             if (line != null)
+    //             {
+    //                 // Start Color와 End Color에서 알파 값을 설정하여 투명도 적용
+    //                 Color startCol = line.startColor;
+    //                 startCol.a = Mathf.Clamp01(transparency); // 원하는 투명도 설정
+    //                 line.startColor = startCol;
+    //
+    //                 Color endCol = line.endColor;
+    //                 endCol.a = Mathf.Clamp01(transparency); // 원하는 투명도 설정
+    //                 line.endColor = endCol;
+    //
+    //                 // Material이 제대로 적용되었는지 확인 (Particles/Standard Unlit 사용)
+    //                 line.material.renderQueue = 3000; // Transparent 렌더링 순서 보장
+    //             }
+    //         }
+    //     }
+    // }
 }

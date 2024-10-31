@@ -20,6 +20,7 @@ public class Calibration : MonoBehaviour
     private List<float> receivedDataList = new List<float>();
 
     private GameObject[] jointObjects;
+    private Vector3[] rawJointVectors;
 
     public GameObject[] JointObjects => jointObjects;
     private LineRenderer[] lineRenderers; 
@@ -29,6 +30,7 @@ public class Calibration : MonoBehaviour
 
     public string subNum;
     private bool isFunctionRunning = false;
+    private MotionScaler motionScaler;
     
     private int[,] jointHierarchy = new int[,]
     {
@@ -85,13 +87,13 @@ public class Calibration : MonoBehaviour
     {
         udpClient = new UdpClient(5005);
         remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
+        rawJointVectors = new Vector3[21];
 
         // 데이터를 수신하는 스레드를 실행합니다.
         udpClient.BeginReceive(new AsyncCallback(OnDataReceived), udpClient);
 
-        StartCoroutine(Countdown(3f));
-
         /*StartCoroutine(ProcessDataAt30Hz());*/
+        motionScaler = GetComponent<MotionScaler>();
     }
 
     private void OnDataReceived(IAsyncResult result)
@@ -157,6 +159,10 @@ public class Calibration : MonoBehaviour
     }*/
     void Update()
     {
+        if (OVRInput.GetDown(OVRInput.RawButton.RIndexTrigger))
+        {
+            AlignJoints();
+        }
         // 파싱된 데이터 출력 (리스트로 변환된 데이터 사용 가능)
         if (receivedDataList != null && receivedDataList.Count > 0)
         {
@@ -195,6 +201,11 @@ public class Calibration : MonoBehaviour
             }
         }*/
     }
+
+    public void StartCalibration()
+    {
+        StartCoroutine((Countdown(3f)));
+    }
     
     IEnumerator Countdown(float countdownTime)
     {
@@ -229,6 +240,7 @@ public class Calibration : MonoBehaviour
         isFunctionRunning = false;
         Debug.Log("Calibration Ends");
         SaveCalibration($"{subNum}_calibration_data.csv");
+        motionScaler.MotionScaling(calibrationList);
     }
     
     // private void ReadDataFromServer()
@@ -318,6 +330,7 @@ public class Calibration : MonoBehaviour
         for (int i = 0; i < 21; i++)
         {
             Vector3 tempVector = new Vector3(-jointList[i*3], jointList[i*3+1], jointList[i*3+2]);
+            rawJointVectors[i] = tempVector;
             positions[i] = Normalization(tempVector);
         }
 
@@ -341,7 +354,17 @@ public class Calibration : MonoBehaviour
             }
         }
     }
-
+    private void AlignJoints()
+    {
+        if (rawJointVectors != null && rawJointVectors.Length > 0 && rawJointVectors[0] != null)
+        {
+            /*
+            Debug.Log(rawJointVectors[0]);
+            */
+            rootCoord = rawJointVectors[0];
+        }
+    }
+    
     private Vector3 Normalization(Vector3 positions)
     {
         Vector3 normalizedPosition = new Vector3(); 

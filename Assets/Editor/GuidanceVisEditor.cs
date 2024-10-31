@@ -19,24 +19,53 @@ public class GuidanceVisEditor : Editor
             {
                 if (guidanceVisualization.fullJoints.enabled)
                 {
-                    guidanceVisualization.fullJoints.StartAnimation();
-                    guidanceVisualization.fullJoints.TimestampRecording("start");
-
+                    guidanceVisualization.fullJoints.StartAnimation(false);
                 }
                 else if (guidanceVisualization.armsGuidance.enabled)
                 {
-                    guidanceVisualization.armsGuidance.StartAnimation();
-                    guidanceVisualization.armsGuidance.TimestampRecording("start");
+                    guidanceVisualization.armsGuidance.StartAnimation(false);
                 }
                 else if (guidanceVisualization.armsAndLegsGuidance.enabled)
                 {
-                    guidanceVisualization.armsAndLegsGuidance.StartAnimation();
-                    guidanceVisualization.armsAndLegsGuidance.TimestampRecording("start");
+                    guidanceVisualization.armsAndLegsGuidance.StartAnimation(false);
                 }
             }
-
         }
-        
+
+        if (GUILayout.Button("Demo"))
+        {
+            if (guidanceVisualization.isEnabled2)
+            {
+                if (guidanceVisualization.fullJoints.enabled)
+                {
+                    guidanceVisualization.fullJoints.StartAnimation(true);
+                }
+                else if (guidanceVisualization.armsGuidance.enabled)
+                {
+                    guidanceVisualization.armsGuidance.StartAnimation(true);
+                }
+                else if (guidanceVisualization.armsAndLegsGuidance.enabled)
+                {
+                    guidanceVisualization.armsAndLegsGuidance.StartAnimation(true);
+                }
+            }
+        }
+
+        if (GUILayout.Button("Reset"))
+        {
+            if (guidanceVisualization.fullJoints.enabled)
+            {
+                guidanceVisualization.fullJoints.ResetJoints();
+            }
+            else if (guidanceVisualization.armsGuidance.enabled)
+            {
+                guidanceVisualization.armsGuidance.ResetJoints();
+            }
+            else if (guidanceVisualization.armsAndLegsGuidance.enabled)
+            {
+                guidanceVisualization.armsAndLegsGuidance.ResetJoints();
+            }
+        }
         
     }
     

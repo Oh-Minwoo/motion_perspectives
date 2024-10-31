@@ -1,0 +1,28 @@
+Documentation of Badminton Court Asset Pack:
+
+In this asset pack, we have created a Badminton Court environment with various objects and props, which can be used to create a realistic and immersive badminton court scene for your Unity game or project. All the models are created separately, and they are reusable, so you can use and place them in your environment as per your requirement.
+
+The Badminton Court Asset Pack consists of different objects such as the badminton court itself, nets, rackets, shuttlecocks, seating areas, lighting fixtures, and other objects to make a complete badminton court setting. The models are designed with attention to detail and optimized for real-time rendering. You can see 3 types of badminton court in this Package, you can change color according to your need.
+
+We have organized the asset pack into different folders for easy access:
+
+Material:
+Models are made with appropriate materials to ensure a realistic look.
+
+Models:
+In this models folder, you will find different types of models related to the badminton court, including the court itself, nets, rackets, shuttlecocks, seating areas, etc.
+
+Prefabs:
+All the necessary objects of the Badminton Court Asset Pack are placed in the prefabs folder, so you can easily drag and drop them into your scene. The prefabs are set up with proper colliders, allowing for accurate collision detection during gameplay.
+
+Scene:
+There are demo scenes of the Badminton Court included in this folder. These scenes showcase how the assets can be arranged and utilized to create a complete badminton court environment.
+
+Texture:
+Models are textured using high-resolution textures to enhance the visual quality of the assets.
+
+Documentation:
+A readme file is provided with detailed instructions on how to use the assets, including information on scaling, rotation, and customization options.
+
+
+All the prefabs are created, and you can use each prefab according to your environment. Each object is scalable, and you can transform and rotate every object as per your requirement. With this asset pack, you can create an immersive and realistic badminton court environment for your Unity game or project.

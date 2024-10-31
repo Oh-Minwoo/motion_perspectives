@@ -16,7 +16,10 @@ public class JointVisualization2 : MonoBehaviour
     private int currentFrame = 0;
     public float UpdateSeconds = 0.033f; // 30FPS =  0.033
     private Vector3 hipPosition;
-
+    private bool isTriggerActive = false;
+    private int demoCounter = 0;
+    public int demoLimit = 5;
+    
     // joint별 오브젝트 정의
     /*
     public GameObject Hips;
@@ -211,6 +214,17 @@ public class JointVisualization2 : MonoBehaviour
 
     void Update()
     {
+        if (OVRInput.GetDown(OVRInput.RawButton.RIndexTrigger) && demoCounter <= demoLimit)
+        {
+            isTriggerActive = true;
+            demoCounter++;
+        }
+
+        if (!isTriggerActive)
+        {
+            return;
+        }
+        
         timer += Time.deltaTime;
         if (timer >= UpdateSeconds)
         {
@@ -218,7 +232,13 @@ public class JointVisualization2 : MonoBehaviour
             UpdateJointsPositions();
             /*UpdateJointsRotations();*/
             //HideJointAndLine();
-            currentFrame = (currentFrame + 1) % jointPositions.Count; 
+            currentFrame++;
+            if (currentFrame >= jointPositions.Count)
+            {
+                currentFrame = 0; // 범위를 넘어가지 않도록 고정
+                isTriggerActive = false;
+            }
+            // currentFrame = (currentFrame + 1) % jointPositions.Count; 
         }
     }
 
