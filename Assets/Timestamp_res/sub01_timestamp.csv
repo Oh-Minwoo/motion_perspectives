@@ -1,193 +1,31 @@
-Subject Name, Condition, Action, Unix Time
-sub01,armsLegsMo + fullVis,start,1730179821.728730
-sub01,armsLegsMo + fullVis,update,1730179831.801870
-sub01,armsLegsMo + fullVis,update,1730179831.925580
-sub01,armsLegsMo + fullVis,update,1730179832.552330
-sub01,armsLegsMo + fullVis,update,1730179833.343870
-sub01,armsLegsMo + fullVis,update,1730179833.621540
-sub01,armsLegsMo + fullVis,update,1730179834.178260
-sub01,armsLegsMo + fullVis,update,1730179838.511710
-sub01,armsLegsMo + fullVis,update,1730179838.635710
-sub01,armsLegsMo + fullVis,update,1730179838.955120
-sub01,armsLegsMo + fullVis,update,1730179839.218500
-sub01,armsLegsMo + fullVis,update,1730179841.871900
-sub01,armsLegsMo + fullVis,update,1730179842.663790
-sub01,armsLegsMo + fullVis,update,1730179843.509960
-sub01,armsLegsMo + fullVis,update,1730179843.982840
-sub01,armsLegsMo + fullVis,update,1730179858.301990
-sub01,armsLegsMo + fullVis,update,1730179858.427250
-sub01,armsLegsMo + fullVis,update,1730179858.552000
-sub01,armsLegsMo + fullVis,update,1730179858.678760
-sub01,armsLegsMo + fullVis,update,1730179858.801650
-sub01,armsLegsMo + fullVis,update,1730179859.093400
-sub01,armsLegsMo + fullVis,update,1730179859.232880
-sub01,armsLegsMo + fullVis,update,1730179859.427220
-sub01,armsLegsMo + fullVis,update,1730179862.496640
-sub01,armsLegsMo + fullVis,update,1730179863.011770
-sub01,armsLegsMo + fullVis,update,1730179863.622720
-sub01,armsLegsMo + fullVis,update,1730179864.136060
-sub01,armsLegsMo + fullVis,update,1730179865.122610
-sub01,armsLegsMo + fullVis,update,1730179866.149690
-sub01,armsLegsMo + fullVis,update,1730179870.190570
-sub01,armsLegsMo + fullVis,update,1730179870.802600
-sub01,armsLegsMo + fullVis,update,1730179871.136010
-sub01,armsLegsMo + fullVis,end,1730179871.245640
-sub01,armsLegsMo + fullVis,update,1730179871.246600
-sub01,armsLegsMo + fullVis,start,1730179903.269770
-sub01,armsLegsMo + fullVis,update,1730179907.261140
-sub01,armsLegsMo + fullVis,update,1730179907.385370
-sub01,armsLegsMo + fullVis,update,1730179907.509450
-sub01,armsLegsMo + fullVis,update,1730179917.524290
-sub01,armsLegsMo + fullVis,update,1730179917.648970
-sub01,armsLegsMo + fullVis,update,1730179918.219160
-sub01,armsLegsMo + fullVis,update,1730179918.398780
-sub01,armsLegsMo + fullVis,update,1730179918.592560
-sub01,armsLegsMo + fullVis,update,1730179918.867830
-sub01,armsLegsMo + fullVis,update,1730179923.579270
-sub01,armsLegsMo + fullVis,update,1730179923.717850
-sub01,armsLegsMo + fullVis,update,1730179923.857760
-sub01,armsLegsMo + fullVis,update,1730179924.648820
-sub01,armsLegsMo + fullVis,update,1730179924.829340
-sub01,armsLegsMo + fullVis,update,1730179924.954430
-sub01,armsLegsMo + fullVis,update,1730179940.078660
-sub01,armsLegsMo + fullVis,update,1730179940.551770
-sub01,armsLegsMo + fullVis,update,1730179940.676200
-sub01,armsLegsMo + fullVis,update,1730179947.676750
-sub01,armsLegsMo + fullVis,update,1730179947.816080
-sub01,armsLegsMo + fullVis,update,1730179947.944820
-sub01,armsLegsMo + fullVis,update,1730179949.356890
-sub01,armsLegsMo + fullVis,update,1730179949.718220
-sub01,armsLegsMo + fullVis,update,1730179950.146330
-sub01,armsLegsMo + fullVis,update,1730179951.495150
-sub01,armsLegsMo + fullVis,update,1730179956.148670
-sub01,armsLegsMo + fullVis,update,1730179956.579070
-sub01,armsLegsMo + fullVis,update,1730179960.536810
-sub01,armsLegsMo + fullVis,update,1730179967.801360
-sub01,armsLegsMo + fullVis,update,1730179972.926140
-sub01,armsLegsMo + fullVis,update,1730179973.403430
-sub01,armsLegsMo + fullVis,end,1730179973.522430
-sub01,armsLegsMo + fullVis,update,1730179973.523450
-sub01,armsLegsMo + fullVis,start,1730179999.754580
-sub01,armsLegsMo + fullVis,update,1730180006.412990
-sub01,armsLegsMo + fullVis,update,1730180007.535780
-sub01,armsLegsMo + fullVis,update,1730180007.757820
-sub01,armsLegsMo + fullVis,update,1730180014.327680
-sub01,armsLegsMo + fullVis,update,1730180014.453310
-sub01,armsLegsMo + fullVis,update,1730180017.591560
-sub01,armsLegsMo + fullVis,update,1730180017.785910
-sub01,armsLegsMo + fullVis,update,1730180018.105470
-sub01,armsLegsMo + fullVis,update,1730180018.383080
-sub01,armsLegsMo + fullVis,update,1730180019.133350
-sub01,armsLegsMo + fullVis,update,1730180019.257340
-sub01,armsLegsMo + fullVis,update,1730180019.396900
-sub01,armsLegsMo + fullVis,update,1730180019.507260
-sub01,armsLegsMo + fullVis,update,1730180019.688650
-sub01,armsLegsMo + fullVis,update,1730180019.814640
-sub01,armsLegsMo + fullVis,update,1730180019.938890
-sub01,armsLegsMo + fullVis,update,1730180020.063150
-sub01,armsLegsMo + fullVis,update,1730180020.188660
-sub01,armsLegsMo + fullVis,update,1730180020.313970
-sub01,armsLegsMo + fullVis,update,1730180020.438940
-sub01,armsLegsMo + fullVis,update,1730180020.563340
-sub01,armsLegsMo + fullVis,update,1730180021.925250
-sub01,armsLegsMo + fullVis,update,1730180026.313710
-sub01,armsLegsMo + fullVis,update,1730180026.745330
-sub01,armsLegsMo + fullVis,update,1730180047.728980
-sub01,armsLegsMo + fullVis,update,1730180048.757880
-sub01,armsLegsMo + fullVis,update,1730180049.882460
-sub01,armsLegsMo + fullVis,update,1730180050.160860
-sub01,armsLegsMo + fullVis,update,1730180062.411070
-sub01,armsLegsMo + fullVis,update,1730180062.966810
-sub01,armsLegsMo + fullVis,update,1730180092.437910
-sub01,armsLegsMo + fullVis,end,1730180092.562000
-sub01,armsLegsMo + fullVis,update,1730180092.562950
-sub01,armsLegsMo + fullVis,start,1730180405.165080
-sub01,armsLegsMo + fullVis,update,1730180417.316130
-sub01,armsLegsMo + fullVis,update,1730180439.518220
-sub01,armsLegsMo + fullVis,update,1730180442.535010
-sub01,armsLegsMo + fullVis,update,1730180450.978530
-sub01,armsLegsMo + fullVis,start,1730180623.203970
-sub01,armsLegsMo + fullVis,update,1730180634.378680
-sub01,armsLegsMo + fullVis,update,1730180634.505070
-sub01,armsLegsMo + fullVis,update,1730180634.629030
-sub01,armsLegsMo + fullVis,update,1730180635.267240
-sub01,armsLegsMo + fullVis,update,1730180636.487890
-sub01,armsLegsMo + fullVis,update,1730180643.988620
-sub01,armsLegsMo + fullVis,update,1730180644.112920
-sub01,armsLegsMo + fullVis,update,1730180644.239550
-sub01,armsMo + fullVis,start,1730190076.281200
-sub01,armsMo + fullVis,start,1730190936.371170
-sub01,armsLegsMo + fullVis,start,1730190971.344100
-sub01,armsLegsMo + fullVis,update,1730190981.813600
-sub01,armsLegsMo + fullVis,update,1730190981.936730
-sub01,armsLegsMo + fullVis,update,1730190982.063980
-sub01,armsLegsMo + fullVis,update,1730190986.755300
-sub01,armsLegsMo + fullVis,update,1730190987.034280
-sub01,armsLegsMo + fullVis,update,1730190987.867930
-sub01,armsLegsMo + fullVis,update,1730190989.075960
-sub01,armsLegsMo + fullVis,update,1730190989.201300
-sub01,armsLegsMo + fullVis,update,1730190989.326390
-sub01,armsLegsMo + fullVis,update,1730190990.910230
-sub01,armsLegsMo + fullVis,update,1730190991.705070
-sub01,armsLegsMo + fullVis,update,1730190992.117710
-sub01,armsLegsMo + fullVis,update,1730190999.159960
-sub01,armsLegsMo + fullVis,update,1730191001.311000
-sub01,armsLegsMo + fullVis,update,1730191001.434670
-sub01,armsLegsMo + fullVis,update,1730191022.242910
-sub01,armsLegsMo + fullVis,update,1730191030.270440
-sub01,armsLegsMo + fullVis,update,1730191030.393630
-sub01,armsLegsMo + fullVis,update,1730191034.981490
-sub01,armsLegsMo + fullVis,update,1730191035.548070
-sub01,armsLegsMo + fullVis,update,1730191039.604760
-sub01,armsLegsMo + fullVis,update,1730191040.160450
-sub01,armsLegsMo + fullVis,update,1730191041.381550
-sub01,armsLegsMo + fullVis,update,1730191049.146010
-sub01,armsLegsMo + fullVis,update,1730191049.465670
-sub01,armsLegsMo + fullVis,update,1730191051.812580
-sub01,armsLegsMo + fullVis,update,1730191066.131740
-sub01,armsLegsMo + fullVis,update,1730191067.576200
-sub01,armsLegsMo + fullVis,update,1730191072.798870
-sub01,armsLegsMo + fullVis,update,1730191073.491630
-sub01,armsLegsMo + fullVis,update,1730191083.380790
-sub01,armsLegsMo + fullVis,end,1730191083.507160
-sub01,armsLegsMo + fullVis,update,1730191083.508150
-smw,armsMo + fullVis,start,1730215350.929960
-sub01,armsMo + fullVis,start,1730215429.584910
-sub01,armsMo + fullVis,update,1730215433.968550
-sub01,armsMo + fullVis,update,1730215434.717080
-sub01,armsMo + fullVis,update,1730215435.508340
-sub01,armsMo + fullVis,update,1730215436.286040
-sub01,armsMo + fullVis,update,1730215437.272890
-sub01,armsMo + fullVis,update,1730215437.423700
-sub01,armsMo + fullVis,update,1730215466.299750
-sub01,armsMo + fullVis,start,1730215556.181310
-sub01,armsMo + fullVis,end,1730215565.979320
-sub01,armsMo + fullVis,end,1730215571.039960
-sub01,armsMo + fullVis,start,1730215571.040990
-sub01,armsMo + fullVis,start,1730215585.295780
-sub01,armsMo + fullVis,end,1730215595.032900
-sub01,armsMo + fullVis,start,1730215622.569510
-sub01,armsMo + fullVis,end,1730215629.463480
-sub01,armsMo + fullVis,start,1730215643.905830
-sub01,armsMo + fullVis,end,1730215650.810270
-sub01,armsMo + fullVis,start,1730215752.013250
-sub01,armsMo + fullVis,end,1730215758.988780
-sub01,armsMo + fullVis,start,1730215837.666900
-sub01,armsMo + fullVis,end,1730215844.543420
-sub01,armsMo + fullVis,start,1730215971.105940
-sub01,armsMo + fullVis,end,1730215977.894000
-sub01,armsMo + fullVis,start,1730215992.060280
-sub01,armsMo + fullVis,end,1730215998.862060
-sub01,armsMo + fullVis,start,1730216060.336950
-sub01,armsMo + fullVis,end,1730216068.331750
-sub01,armsMo + fullVis,start,1730265344.570140
-sub01,armsMo + fullVis,end,1730265352.534180
-sub01,armsMo + fullVis,start,1730265534.123120
-sub01,armsMo + fullVis,start,1730265597.966940
-sub01,armsMo + fullVis,end,1730265602.329150
-sub01,armsMo + fullVis,end,1730265604.711330
-sub01,armsMo + fullVis,start,1730265604.712370
-sub01,armsMo + fullVis,start,1730265614.530170
-sub01,armsMo + fullVis,end,1730265618.833140
-sub01,armsMo + fullVis,start,1730265633.603840
-sub01,armsMo + fullVis,end,1730265637.637150
+Subject Name,Motion,Condition,Action,Unix Time
+sub01,badminton,Full Body,start,1730715608.671550
+sub01,badminton,Full Body,end,1730715613.195970
+sub01,badminton,Full Body,start,1730715636.766660
+sub01,badminton,Full Body,end,1730715641.280520
+sub01,badminton,Full Body,start,1730715653.335040
+sub01,badminton,Full Body,end,1730715657.849630
+sub01,badminton,Full Body,start,1730715666.529050
+sub01,badminton,Full Body,end,1730715671.029780
+sub01,badminton,Full Body,start,1730715677.585070
+sub01,badminton,Full Body,end,1730715682.127310
+sub01,badminton,Arms and Legs,start,1730716510.148360
+sub01,badminton,Arms and Legs,end,1730716514.646670
+sub01,badminton,Arms and Legs,start,1730716521.785250
+sub01,badminton,Arms and Legs,end,1730716526.298740
+sub01,badminton,Arms and Legs,start,1730716533.048370
+sub01,badminton,Arms and Legs,end,1730716537.560130
+sub01,badminton,Arms and Legs,start,1730716544.076510
+sub01,badminton,Arms and Legs,end,1730716548.578540
+sub01,badminton,Arms and Legs,start,1730716555.479250
+sub01,badminton,Arms and Legs,end,1730716559.981030
+sub01,badminton,Arms,start,1730716793.510980
+sub01,badminton,Arms,end,1730716798.022900
+sub01,badminton,Arms,start,1730716807.218000
+sub01,badminton,Arms,end,1730716811.745160
+sub01,badminton,Arms,start,1730716822.453620
+sub01,badminton,Arms,end,1730716826.981120
+sub01,badminton,Arms,start,1730716834.256460
+sub01,badminton,Arms,end,1730716838.744200
+sub01,badminton,Arms,start,1730716845.798420
+sub01,badminton,Arms,end,1730716850.314260

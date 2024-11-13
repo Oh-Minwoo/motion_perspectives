@@ -12,13 +12,14 @@ using Newtonsoft.Json; // JSON 파싱을 위한 Newtonsoft.Json 라이브러리 
 public class SocketListener : MonoBehaviour
 {
     [SerializeField] private Vector3 positionOffset = new Vector3(-100, 1, 0);
-    public RealTimePerformanceMeasurement realTimePerformanceMeasurement;
-    
+
+    public FullJoints fullJoints;
     private UdpClient udpClient;
     private IPEndPoint remoteEndPoint;
     private List<float> receivedDataList = new List<float>();
     [HideInInspector] public bool isGuidanceStart = false;
-
+    [HideInInspector] public Vector3 headPosition;
+    
     private GameObject[] jointObjects;
     private Vector3[] rawJointVectors;
 
@@ -133,19 +134,19 @@ public class SocketListener : MonoBehaviour
             {
                 
                 CreateJointsAndConnections(jointList);
-                if (isGuidanceStart)
-                {
-                    realTimePerformanceMeasurement.GetJointPos(jointObjects, timestamp);
-                }
+                // if (isGuidanceStart)
+                // {
+                //     realTimePerformanceMeasurement.GetJointPos(jointObjects, timestamp);
+                // }
                 firstDataProcessed = true;  // 첫 번째 데이터 처리 완료 표시
             }
             else
             {
-                UpdateJointsPositions(jointList);
-                if (isGuidanceStart)
-                {
-                    realTimePerformanceMeasurement.GetJointPos(jointObjects, timestamp);
-                }
+                UpdateJointsPositions(jointList, fullJoints.mirrored);
+                // if (isGuidanceStart)
+                // {
+                //     realTimePerformanceMeasurement.GetJointPos(jointObjects, timestamp);
+                // }
             }
         }
     }
@@ -179,6 +180,8 @@ public class SocketListener : MonoBehaviour
             material.shader = Shader.Find("Standard");
             renderer.name = jointNames[i];
         }
+
+        headPosition = jointObjects[12].transform.position;
         
         
 
@@ -200,12 +203,12 @@ public class SocketListener : MonoBehaviour
     }
 
     
-    public void UpdateJointsPositions(List<float> jointList)
+    public void UpdateJointsPositions(List<float> jointList, int mirrored)
     {
         Vector3[] positions = new Vector3[21];
         for (int i = 0; i < 21; i++)
         {
-            Vector3 tempVector = new Vector3(-jointList[i*3], jointList[i*3+1], jointList[i*3+2]);
+            Vector3 tempVector = new Vector3(-jointList[i*3], jointList[i*3+1], mirrored * jointList[i*3+2]);
             rawJointVectors[i] = tempVector;
             positions[i] = Normalization(tempVector);
         }
@@ -217,6 +220,7 @@ public class SocketListener : MonoBehaviour
                 jointObjects[i].transform.position = positions[i] + positionOffset;
             }
         }
+        headPosition = jointObjects[12].transform.position;
 
         // LineRenderer 위치 업데이트
         for (int i = 0; i < lineRenderers.Length; i++)

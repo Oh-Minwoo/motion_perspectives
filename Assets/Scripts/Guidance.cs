@@ -15,8 +15,6 @@ public class ExplicitGuidance : MonoBehaviour
     private List<List<LineRenderer[]>> allLines = new List<List<LineRenderer[]>>(); // LineRenderer 참조를 저장할 배열
     private int[] engagedJointList;
     private int[] engagedLineList;
-    
-    public RealTimePerformanceMeasurement realTimePerformanceMeasurement;
 
     public TMP_Text frameLeft;
     private int frameCount = 1;
@@ -84,7 +82,6 @@ public class ExplicitGuidance : MonoBehaviour
         frameLeft.text = str;
 
         currentGuidance = allJoints[0];
-        realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
 
         dataIdx = numOfGuidanceOnScreen;
         
@@ -232,7 +229,6 @@ public class ExplicitGuidance : MonoBehaviour
         {
             currentGuidance = allJoints[0];
         }
-        realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
         
         string str = $"{++frameCount}/{jointPositions.Count}";
         frameLeft.text = str;

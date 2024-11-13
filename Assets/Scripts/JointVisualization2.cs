@@ -214,7 +214,7 @@ public class JointVisualization2 : MonoBehaviour
 
     void Update()
     {
-        if (OVRInput.GetDown(OVRInput.RawButton.RIndexTrigger) && demoCounter <= demoLimit)
+        if (Input.GetKeyDown((KeyCode.Space)) && demoCounter <= demoLimit)
         {
             isTriggerActive = true;
             demoCounter++;

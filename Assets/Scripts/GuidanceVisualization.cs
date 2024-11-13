@@ -93,7 +93,7 @@ public class GuidanceVisualization : MonoBehaviour
         isEnabled = true;
         isEnabled2 = true;
     }
-    
+
     private void FilePathGenerator()
     {
         string csvFileName = $"{subName}_timestamp.csv";
@@ -106,7 +106,7 @@ public class GuidanceVisualization : MonoBehaviour
         if (!File.Exists(path))
         {
             // 파일 생성
-            File.WriteAllText(path, "Subject Name, Condition, Action, Unix Time\n"); // 헤더 추가
+            File.WriteAllText(path, "Subject Name, Motion, Condition, Action, Unix Time\n"); // 헤더 추가
             Debug.Log("CSV 파일이 생성되었습니다: " + path);
         }
         else

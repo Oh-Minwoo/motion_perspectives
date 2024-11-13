@@ -1774,18 +1774,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   subName: 0
   RangeOfVisulization:
-    arms: 0
+    arms: 1
     armsAndLegs: 0
-    fullBody: 1
+    fullBody: 0
   TypeOfMotion:
     badminton: 1
     taichi: 0
   updateMethods:
     interactive: 0
     autonomous: 1
-  badmintonCSV: {fileID: 4900000, guid: 5a678108bf57aea478e80e285f7640e8, type: 3}
-  taichiCSV: {fileID: 4900000, guid: 50d9fbcc970ea5346ba547b5a5ac7720, type: 3}
-  speed: 0.8
+  badmintonCSV: {fileID: 4900000, guid: 718ed081811efb04daf620a44fa0285f, type: 3}
+  taichiCSV: {fileID: 4900000, guid: 7786921d69252ed4fa4a3b816da1f82a, type: 3}
+  speed: 1
   frameRate: 60
   fullJoints: {fileID: 0}
   armsGuidance: {fileID: 0}

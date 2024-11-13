@@ -453,7 +453,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   positionOffset: {x: -100, y: 1, z: 0}
-  subNum: guide
+  subNum: sub06
 --- !u!114 &238803216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -471,7 +471,7 @@ MonoBehaviour:
   egocentricCSV: {fileID: 4900000, guid: a5bcdec7baa92c44fa924705fca1078b, type: 3}
   jointOffsetsJSON: {fileID: 4900000, guid: 89336f975ab99f04aa5d3821350b087d, type: 3}
   practiceJointOffsetsJSON: {fileID: 4900000, guid: 13b640f96cc0af447bb56b1a8cf59137, type: 3}
-  subjectNumber: 0
+  subjectNumber: sub06
 --- !u!1 &254484475
 GameObject:
   m_ObjectHideFlags: 0

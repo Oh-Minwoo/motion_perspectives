@@ -120,9 +120,9 @@ public class MotionScaler : MonoBehaviour
 
         // 스케일링된 데이터 CSV로 저장
         // string armsScaledPath = Path.Combine(Application.dataPath, $"Data/{subjectNumber}_arms_guidance.csv");
-        string armsAndLegsScaledPath = Path.Combine(Application.dataPath, $"Data/{subjectNumber}_arms_and_leg_guidance.csv");
-        string frontalScaledPath = Path.Combine(Application.dataPath, $"Data/{subjectNumber}_frontal.csv");
-        string egocentricScaledPath = Path.Combine(Application.dataPath, $"Data/{subjectNumber}_egocentric.csv");
+        string armsAndLegsScaledPath = Path.Combine(Application.dataPath, $"Data/Badminton/{subjectNumber}_badminton.csv");
+        string frontalScaledPath = Path.Combine(Application.dataPath, $"Data/Practice/{subjectNumber}_frontal.csv");
+        string egocentricScaledPath = Path.Combine(Application.dataPath, $"Data/Practice/{subjectNumber}_egocentric.csv");
 
 
         // WriteCsv(armsScaled, armsScaledPath);

@@ -23,7 +23,7 @@ public class ArmsAndLegsGuidance : MonoBehaviour
     private int[] engagedLineList;
 
     
-    public RealTimePerformanceMeasurement realTimePerformanceMeasurement;
+    // public RealTimePerformanceMeasurement realTimePerformanceMeasurement;
 
     public TMP_Text textUI;
     private int frameCount = 0;
@@ -116,7 +116,7 @@ public class ArmsAndLegsGuidance : MonoBehaviour
         }
 
         currentGuidance = allJoints[0];
-        realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
+        // realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
 
         dataIdx = numOfGuidanceOnScreen;
 
@@ -249,7 +249,16 @@ public class ArmsAndLegsGuidance : MonoBehaviour
                 SetMaterialToTransparent(material);
             }
             
-            material.color = color;
+            
+            if (j == 2 || j == 5 || j == 8 || j == 11)
+            {
+                Color navyBlue = new Color(0f, 0f, 0.5f);
+                material.color = navyBlue;
+            }
+            else
+            {
+                material.color = color;
+            }
             
 
             MeshRenderer meshRenderer = jointObj.GetComponent<MeshRenderer>();
@@ -337,7 +346,7 @@ public class ArmsAndLegsGuidance : MonoBehaviour
         {
             currentGuidance = allJoints[0];
         }
-        realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
+        // realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
         
         // string str = $"{++frameCount}/{jointPositions.Count}";
         // textUI.text = str;

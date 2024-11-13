@@ -8,29 +8,115 @@ using System.IO;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
+[Serializable]
+public struct Motions
+{
+    public bool frontal;
+    public bool peripheral;
+    public bool taichi;
+    
+    public override bool Equals(object obj)
+    {
+        if (!(obj is Motions))
+            return false;
+        Motions other = (Motions)obj;
+        return frontal == other.frontal &&
+               peripheral == other.peripheral &&
+               taichi == other.taichi;
+    }
+
+    public override int GetHashCode()
+    {
+        // 각 bool을 비트로 표현하여 해시코드 생성
+        return (frontal ? 1 : 0) |
+               (peripheral ? 2 : 0) |
+               (taichi ? 4 : 0);
+    }
+}
+
+[Serializable]
+public struct Perspectives
+{
+    public bool firstPerson;
+    public bool thirdPerson;
+    public bool mirror;
+    public bool multiView;
+    
+    public bool Equals(Perspectives other)
+    {
+        return firstPerson == other.firstPerson &&
+               thirdPerson == other.thirdPerson &&
+               mirror == other.mirror &&
+               multiView == other.multiView;
+    }
+
+    // Object.Equals 오버라이드
+    public override bool Equals(object obj)
+    {
+        if (obj is Perspectives other)
+        {
+            return Equals(other);
+        }
+        return false;
+    }
+
+    // GetHashCode 오버라이드
+    public override int GetHashCode()
+    {
+        // 각 bool을 비트로 표현하여 해시코드 생성
+        return (firstPerson ? 1 : 0) |
+               (thirdPerson ? 2 : 0) |
+               (mirror ? 4 : 0) |
+               (multiView ? 8 : 0);
+    }
+}
+
+
 public class FullJoints : MonoBehaviour
 {
-    private GuidanceVisualization guidanceVisualization;
+    public string subName;
+    public Motions motions;
+    private Motions previousMotions;
+    [Space(10)]
+    public Perspectives perspectives;
+    private Perspectives previousPerspectives;
+    
+    [Space(10)]
+    [Header("System Settings")]
+    
+    public TextAsset frontalCSV;
+    public TextAsset peripheralCSV;
+    public TextAsset taichiCSV;
+
+    [Space(10)] public float speed = 0.5f;
+    
+    private bool isDemo = false;
+    private TimestampRecoder timestampRecoder;
+    
     public SocketListener socketListener;
-    private bool isBadminton = false;
-    private bool isDemo;
-    private TextAsset badmintonCSV;
-    private TextAsset taichiCSV;
     private List<Vector3[]> jointPositions = new List<Vector3[]>();
     private List<GameObject[]> allJoints = new List<GameObject[]>();
     [HideInInspector] public GameObject[] currentGuidance;
     private List<LineRenderer[]> allLines = new List<LineRenderer[]>(); // LineRenderer 참조를 저장할 배열
     private int[] engagedJointList;
     private int[] engagedLineList;
+
+    private Vector3 originalCameraPos = new Vector3(-99f, 1f, -3.5f);
+    private bool isFirstPerson = false;
     
     
-    public RealTimePerformanceMeasurement realTimePerformanceMeasurement;
 
     public TMP_Text textUI;
+    public RawImage leftImg;
+    public RawImage rightImg;
+    private Vector3 originalTextPos;
     private int frameCount = 0;
     private float[] transperencyArray;
     public Vector3 positionOffset = new Vector3(-100f, 1f, 0f);
+    public Vector3 cameraPosOffset = new Vector3(0f, 0f, -0.01f);
+    [HideInInspector] public int mirrored = 1;
     public Color color;
+    public GameObject camera;
 
     [SerializeField] private float percentage = 0.3f; // 0~1 사이의 값
     [SerializeField] private int numOfGuidanceOnScreen = 5; // Continuous guidance에서 한 화면에 보여질 guidance 개수
@@ -69,31 +155,108 @@ public class FullJoints : MonoBehaviour
 
     private Coroutine animationCoroutine;
 
-    void OnEnable()
+    void Start()
     {
-        guidanceVisualization = GetComponent<GuidanceVisualization>();
-        isBadminton = guidanceVisualization.TypeOfMotion.badminton;
-        badmintonCSV = guidanceVisualization.badmintonCSV;
-        taichiCSV = guidanceVisualization.taichiCSV;
-        
-        // if (isDiscrete)
-        // {
-        //     numOfGuidanceOnScreen = 2;
-        // }
-
-        if (isBadminton)
-        {
-            ReadCSV(badmintonCSV);
-        }
-        else
-        {
-            ReadCSV(taichiCSV);
-        }
-        
+        originalCameraPos = camera.transform.position;
+        originalTextPos = textUI.transform.position;
+        timestampRecoder = GetComponent<TimestampRecoder>();
+        PerspectiveChange();
+        MotionChange();
+        previousMotions = motions;
+        previousPerspectives = perspectives;
         // transperencyArray = CalculateTransparency(numOfGuidanceOnScreen, 0.8f, 0.2f);
         dataIdx = numOfGuidanceOnScreen;
     }
+
+    // void OnValidate()
+    // {
+    //     MotionChange();       
+    //     PerspectiveChange();
+    //
+    //     if (timestampRecoder != null)
+    //     {
+    //         timestampRecoder.ResetConditions();
+    //     }
+    // }
+
+    private void MotionChange()
+    {
+        
+        if (motions.frontal)
+        {
+            ReadCSV(frontalCSV);
+        }
+        else if (motions.peripheral)
+        {
+            ReadCSV(peripheralCSV);
+        }
+        else if (motions.taichi)
+        {
+            ReadCSV(taichiCSV);
+        }
+    }
+
+    private void PerspectiveChange()
+    {
+        if (perspectives.firstPerson)
+        {
+            isFirstPerson = true;
+            textUI.transform.position += new Vector3(1.5f, 0f, 7f);
+            mirrored = 1;
+            leftImg.gameObject.SetActive(false);
+            rightImg.gameObject.SetActive(false);
+            
+        }
+        else if (perspectives.thirdPerson)
+        {
+            isFirstPerson = false;
+            camera.transform.position = originalCameraPos;
+            textUI.transform.position = originalTextPos;
+            mirrored = 1;
+            leftImg.gameObject.SetActive(false);
+            rightImg.gameObject.SetActive(false);
+        }
+        else if (perspectives.mirror)
+        {
+            isFirstPerson = false;
+            camera.transform.position = originalCameraPos;
+            textUI.transform.position = originalTextPos;
+            mirrored = -1;
+            leftImg.gameObject.SetActive(false);
+            rightImg.gameObject.SetActive(false);
+        }
+        else if (perspectives.multiView)
+        {
+            isFirstPerson = false;
+            camera.transform.position = originalCameraPos;
+            textUI.transform.position = originalTextPos;
+            mirrored = 1;
+            leftImg.gameObject.SetActive(true);
+            rightImg.gameObject.SetActive(true);
+        }
+    }
+
+    void Update()
+    {
+        if (!perspectives.Equals(previousPerspectives) || !motions.Equals(previousMotions))
+        {
+            PerspectiveChange();
+            MotionChange();       
+            if (timestampRecoder != null)
+            {
+                timestampRecoder.ResetConditions();
+            }
+            previousMotions = motions;
+            previousPerspectives = perspectives;
+        }
+        if (isFirstPerson)
+        {
+            camera.transform.position = socketListener.headPosition + cameraPosOffset;
+        }
+    }
+
     
+
 
     public void StartAnimation(bool isDemonstraction)
     {
@@ -104,7 +267,6 @@ public class FullJoints : MonoBehaviour
         }
 
         currentGuidance = allJoints[0];
-        realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
         
         socketListener.isGuidanceStart = true;
         StartCoroutine(Countdown(3f));
@@ -134,17 +296,13 @@ public class FullJoints : MonoBehaviour
             }
             yield return null; // 다음 프레임까지 대기
         }
-        if (guidanceVisualization.updateMethods.autonomous)
+        
+        textUI.text = $"Start!";
+        StartCoroutine(Countdown1s());
+        StartCoroutine(UpdateAutomously());
+        if (!isDemo)
         {
-            string count = $"Start!";
-            textUI.text = count;
-            StartCoroutine(Countdown1s());
-            StartCoroutine(UpdateAutomously(guidanceVisualization.speed));
-            if (!isDemo)
-            {
-                guidanceVisualization.TimestampRecording("start", -1);
-            }
-            
+            timestampRecoder.TimestampRecording("start", -1);
         }
     }
     
@@ -161,11 +319,9 @@ public class FullJoints : MonoBehaviour
         textUI.text = "";
     }
     
-
-    
-
     void ReadCSV(TextAsset csvFile)
     {
+        jointPositions = new List<Vector3[]>();
         string[] lines = csvFile.text.Split('\n');
         dataLength = lines.Length;
         for (int i=0; i<dataLength; i++)
@@ -178,7 +334,7 @@ public class FullJoints : MonoBehaviour
             {
                 float x = float.Parse(values[3 * j]) * -1; // 모션 좌우반전
                 float y = float.Parse(values[3 * j + 1]);
-                float z = float.Parse(values[3 * j + 2]);
+                float z = float.Parse(values[3 * j + 2]) * mirrored;
                 positions[j] = new Vector3(x, y, z);
             }
             
@@ -238,6 +394,8 @@ public class FullJoints : MonoBehaviour
             }
 
             material.color = color;
+            
+           
 
             MeshRenderer meshRenderer = jointObj.GetComponent<MeshRenderer>();
             if (meshRenderer != null)
@@ -308,7 +466,6 @@ public class FullJoints : MonoBehaviour
         {
             currentGuidance = allJoints[0];
         }
-        realTimePerformanceMeasurement.GetGuidanceData(currentGuidance);
         
         // string str = $"{++frameCount}/{jointPositions.Count}";
         // frameLeft.text = str;
@@ -342,9 +499,9 @@ public class FullJoints : MonoBehaviour
         dataIdx++;
     }
 
-    public IEnumerator UpdateAutomously(float speed)
+    public IEnumerator UpdateAutomously()
     {
-        float duration = (1 / guidanceVisualization.frameRate) * jointPositions.Count * (1 / speed);
+        float duration = (1 / timestampRecoder.frameRate) * jointPositions.Count * (1 / speed);
         float durationForOneFrame = duration / jointPositions.Count;
         while (true)
         {
@@ -360,11 +517,10 @@ public class FullJoints : MonoBehaviour
             {
                 string str = "동작이\n종료되었습니다.";
                 textUI.text = str;
-                guidanceVisualization.isMotionDone = true;
                 Debug.Log("Motion is over");
                 if (!isDemo)
                 {
-                    guidanceVisualization.TimestampRecording("end", -1);
+                    timestampRecoder.TimestampRecording("end", -1);
                 }
                 
                 yield break;
@@ -374,47 +530,47 @@ public class FullJoints : MonoBehaviour
         
     }
 
-    private void UpdateWithoutAppending()
-    {
-        foreach (var joint in allJoints[0])
-        {
-            Destroy(joint);
-        }
-        
-        foreach (var line in allLines[0])
-        {
-            Destroy(line);
-        }
-        
-        allJoints.RemoveAt(0);
-        allLines.RemoveAt(0);
-        
-        // string str = $"{++frameCount}/{jointPositions.Count}";
-        // frameLeft.text = str;
-        
-        // MakeObjectsTransparent(allJoints[0], allLines[0], 1.0f);
-    }
+    // private void UpdateWithoutAppending()
+    // {
+    //     foreach (var joint in allJoints[0])
+    //     {
+    //         Destroy(joint);
+    //     }
+    //     
+    //     foreach (var line in allLines[0])
+    //     {
+    //         Destroy(line);
+    //     }
+    //     
+    //     allJoints.RemoveAt(0);
+    //     allLines.RemoveAt(0);
+    //     
+    //     // string str = $"{++frameCount}/{jointPositions.Count}";
+    //     // frameLeft.text = str;
+    //     
+    //     // MakeObjectsTransparent(allJoints[0], allLines[0], 1.0f);
+    // }
     
 
-    public void UpdateAnimation()
-    {
-        if (dataIdx <= jointPositions.Count - 1 && frameCount < dataIdx-1)
-        {
-            UpdateJointsPositions();
-        }
-        else if (dataIdx > jointPositions.Count - 1 && frameCount < dataIdx-1)
-        {
-            UpdateWithoutAppending();
-        }
-        else
-        {
-            string str = "Task is over. Please take off the HMD";
-            textUI.text = str;
-            guidanceVisualization.isMotionDone = true;
-            Debug.Log("Motion is over");
-            guidanceVisualization.TimestampRecording("end", -1);
-        }
-    }
+    // public void UpdateAnimation()
+    // {
+    //     if (dataIdx <= jointPositions.Count - 1 && frameCount < dataIdx-1)
+    //     {
+    //         UpdateJointsPositions();
+    //     }
+    //     else if (dataIdx > jointPositions.Count - 1 && frameCount < dataIdx-1)
+    //     {
+    //         UpdateWithoutAppending();
+    //     }
+    //     else
+    //     {
+    //         string str = "Task is over. Please take off the HMD";
+    //         textUI.text = str;
+    //         guidanceVisualization.isMotionDone = true;
+    //         Debug.Log("Motion is over");
+    //         guidanceVisualization.TimestampRecording("end", -1);
+    //     }
+    // }
 
     public void ResetJoints()
     {
