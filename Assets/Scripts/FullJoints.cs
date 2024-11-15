@@ -117,7 +117,14 @@ public class FullJoints : MonoBehaviour
     [HideInInspector] public int mirrored = 1;
     public Color color;
     public GameObject camera;
-
+    
+    [Space(10)]
+    [Header("Tools for SEQ Survey")]
+    public GameObject surveyPanel;
+    public GameObject ovrInteractionPrefab;
+    
+    [Space(10)]
+    [Header("Deprecated. DO NO TOUCH")]
     [SerializeField] private float percentage = 0.3f; // 0~1 사이의 값
     [SerializeField] private int numOfGuidanceOnScreen = 5; // Continuous guidance에서 한 화면에 보여질 guidance 개수
     // [SerializeField] private bool isDiscrete = true;
@@ -166,6 +173,8 @@ public class FullJoints : MonoBehaviour
         previousPerspectives = perspectives;
         // transperencyArray = CalculateTransparency(numOfGuidanceOnScreen, 0.8f, 0.2f);
         dataIdx = numOfGuidanceOnScreen;
+        surveyPanel.SetActive(false);
+        ovrInteractionPrefab.SetActive(false);
     }
 
     // void OnValidate()
@@ -593,6 +602,12 @@ public class FullJoints : MonoBehaviour
         allJoints = new List<GameObject[]>();
         allLines = new List<LineRenderer[]>();
         textUI.text = "";
+    }
+
+    public void StartSEQ()
+    {
+        surveyPanel.SetActive(true);
+        ovrInteractionPrefab.SetActive(true);
     }
 
     // void MakeObjectsTransparent(GameObject[] jointObjects, LineRenderer[] lineRenderers, float transparency)

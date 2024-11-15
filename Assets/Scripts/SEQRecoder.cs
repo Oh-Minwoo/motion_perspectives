@@ -5,45 +5,77 @@ using System.IO;
 
 public class SEQRecoder : MonoBehaviour
 {
-    public List<Button> optionButtons; // 7개의 옵션 버튼
-    public Button submitButton;
+    public List<Toggle> optionButtons; // 7개의 옵션 버튼
+    public Toggle submitButton;
+    public Toggle exitButton;
 
     private int selectedOption = 0;
     // public TimestampRecoder timestampRecoder;
     public FullJoints fullJoints;
+    public GameObject surveyPanel;
+    public GameObject exitPanel;
+    public GameObject ovrInteractionPrefab;
     
     private string csvFilePath;
     private string subName;
     private string motionName;
     private string conditionName;
     private string[] SEQArray;
-    public UnixTime unixTime;
+    private UnixTime unixTime;
     
 
     void Start()
     {
+        unixTime = GetComponent<UnixTime>();
         subName = fullJoints.subName;
         FilePathGenerator();
         CheckAndCreateCSV(csvFilePath);
+        exitPanel.SetActive(false);
         // 각 버튼에 리스너 추가
         for(int i = 0; i < optionButtons.Count; i++)
         {
             int index = i + 1; // 1부터 7까지
-            optionButtons[i].onClick.AddListener(() => SelectOption(index));
+            optionButtons[i].onValueChanged.AddListener((isOn) =>
+            {
+                if (isOn)
+                {
+                    SelectOption(index);
+                }
+            });
         }
 
         // Submit 버튼 리스너 추가
-        submitButton.onClick.AddListener(SubmitAnswer);
+        submitButton.onValueChanged.AddListener((isOn) =>
+        {
+            if (isOn)
+            {
+                SEQRecording();
+            }
+        });
+        
+        exitButton.onValueChanged.AddListener((isOn) =>
+        {
+            if (isOn)
+            {
+                PanelOff();
+            }
+        });
 
         // 초기 상태 설정
-        UpdateButtonVisuals();
+        /*UpdateButtonVisuals();*/
+    }
+
+    public void GetConditions(string motion, string condition)
+    {
+        motionName = motion;
+        conditionName = condition;
     }
     
     private void FilePathGenerator()
     {
         string csvFileName = $"{subName}_seq.csv";
-        csvFilePath = Path.Combine("C:\\Users\\Administrator\\Desktop\\Ohminwoo\\theis\\Assets\\SEQ_res", csvFileName);
-        // csvFilePath = Path.Combine("D:\\OMW\\Research\\Thesis\\Implementation\\PNS_To_Unity_live-master\\Assets\\Timestamp_res", csvFileName);
+        /*csvFilePath = Path.Combine("C:\\Users\\Administrator\\Desktop\\Ohminwoo\\theis\\Assets\\SEQ_res", csvFileName);*/
+        csvFilePath = Path.Combine("D:\\OMW\\Research\\Thesis\\Implementation\\motion_perspective\\motion_perspectives\\Assets\\SEQ_res", csvFileName);
     }
     
     private void CheckAndCreateCSV(string path)
@@ -82,26 +114,14 @@ public class SEQRecoder : MonoBehaviour
             optionButtons[i].colors = cb;
         }
     }
-
-    private void SubmitAnswer()
-    {
-        if(selectedOption == 0)
-        {
-            Debug.Log("옵션을 선택해주세요.");
-            return;
-        }
-
-        // 답변 저장 (예: PlayerPrefs 사용)
-        PlayerPrefs.SetInt("LikertAnswer", selectedOption);
-        PlayerPrefs.Save();
-
-        Debug.Log("답변 제출됨: " + selectedOption);
-
-        // 추가 동작 (예: 다음 질문으로 이동, UI 비활성화 등)
-    }
     
     public void SEQRecording()
     {
+        submitButton.isOn = false;
+        surveyPanel.SetActive(false);
+        exitPanel.SetActive(true);
+        
+        
         SEQArray = new string[5];
         unixTime = GetComponent<UnixTime>();
         string unityTs = unixTime.GetCurrentUnixTime();
@@ -113,6 +133,7 @@ public class SEQRecoder : MonoBehaviour
         
         WriteToCSV(csvFilePath, SEQArray);
     }
+    
     
     private void WriteToCSV(string path, string[] data)
     {
@@ -126,5 +147,18 @@ public class SEQRecoder : MonoBehaviour
         }
 
         Debug.Log("CSV 파일에 데이터가 추가되었습니다: " + csvFilePath);
+    }
+    
+    private void PanelOff()
+    {
+        foreach (var button in optionButtons)
+        {
+                button.isOn = false;
+        }
+        submitButton.isOn = false;
+        exitButton.isOn = false;
+        
+        exitPanel.SetActive(false);
+        ovrInteractionPrefab.SetActive(false);
     }
 }

@@ -3,12 +3,20 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - QDSUIToggleButton
+  - QDSUIIcon
+  - QDSUISecondaryButton
+  - QDSUISection
+  - QDSUISharedThemeColor
+  - QDSUIToggleSwitch
+  - QDSUIToggleCheckboxRadio
+  - QDSUIAccentColor
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - RayTarget
   - Water
   - UI
   - Left

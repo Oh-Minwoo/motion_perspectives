@@ -30,6 +30,7 @@ public class TimestampRecoder : MonoBehaviour
         MotionNameGenerator();
         ConditionNameGenerator();
         FilePathGenerator();
+        seqRecoder.GetConditions(motionName, conditionName);
         
 
         // 파일 확인 및 생성
@@ -41,21 +42,15 @@ public class TimestampRecoder : MonoBehaviour
         Debug.Log("Reset start!");
         MotionNameGenerator();
         ConditionNameGenerator();
-        Debug.Log(motionName + conditionName);
-    }
-
-    public void ResetConditions(string motion, string condition)
-    {
-        motionName = motion;
-        conditionName = condition;
+        seqRecoder.GetConditions(motionName, conditionName);
     }
     
 
     private void FilePathGenerator()
     {
         string csvFileName = $"{subName}_timestamp.csv";
-        csvFilePath = Path.Combine("C:\\Users\\Administrator\\Desktop\\Ohminwoo\\theis\\Assets\\Timestamp_res", csvFileName);
-        // csvFilePath = Path.Combine("D:\\OMW\\Research\\Thesis\\Implementation\\PNS_To_Unity_live-master\\Assets\\Timestamp_res", csvFileName);
+        // csvFilePath = Path.Combine("C:\\Users\\Administrator\\Desktop\\Ohminwoo\\theis\\Assets\\Timestamp_res", csvFileName);
+        csvFilePath = Path.Combine("D:\\OMW\\Research\\Thesis\\Implementation\\motion_perspective\\motion_perspectives\\Assets\\Timestamp_res", csvFileName);
     }
     
     private void CheckAndCreateCSV(string path)

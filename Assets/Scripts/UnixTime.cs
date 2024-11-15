@@ -18,7 +18,7 @@ public class UnixTime : MonoBehaviour
     public string GetCurrentUnixTime()
     {
         double currentUnixTime = UnixTimeHelper.GetCurrentUnixTime();
-        Debug.Log("현재 Unix Time (초, 부동 소수점): " + currentUnixTime.ToString("F6")); // 소수점 이하 6자리까지 표시
+        /*Debug.Log("현재 Unix Time (초, 부동 소수점): " + currentUnixTime.ToString("F6"));*/ // 소수점 이하 6자리까지 표시
         return currentUnixTime.ToString("F6");
     }
 }

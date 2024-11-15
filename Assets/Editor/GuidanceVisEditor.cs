@@ -28,6 +28,16 @@ public class GuidanceVisEditor : Editor
             fullJoints.ResetJoints();
         }
         
+        GUILayout.Space(10);
+        
+        if (GUILayout.Button("SEQ"))
+        {
+            fullJoints.StartSEQ();
+        }
+
+        
+        
+
     }
     
 }
