@@ -6104,9 +6104,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   subName: test
   motions:
-    frontal: 1
+    frontal: 0
     peripheral: 0
-    taichi: 0
+    taichi: 1
   perspectives:
     firstPerson: 0
     thirdPerson: 1
@@ -6114,7 +6114,7 @@ MonoBehaviour:
     multiView: 0
   frontalCSV: {fileID: 4900000, guid: a5caeba3f14f1b8439381ec808bae5f6, type: 3}
   peripheralCSV: {fileID: 4900000, guid: e662c542925b961498bf9543e5051274, type: 3}
-  taichiCSV: {fileID: 4900000, guid: ed2b67120b6fb8b4782fc54861d3132f, type: 3}
+  taichiCSV: {fileID: 4900000, guid: 4515cd4d6338bc9409e87ebd4f5f0a67, type: 3}
   speed: 0.5
   socketListener: {fileID: 238803215}
   currentGuidance: []

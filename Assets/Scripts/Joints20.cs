@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class JointVisualization2 : MonoBehaviour
+public class Joints20 : MonoBehaviour
 {
     public TextAsset csvFile; // Assign your CSV in the inspector
     public Vector3 positionOffsets = new Vector3(-100, 1, 0);
@@ -72,27 +72,26 @@ public class JointVisualization2 : MonoBehaviour
     
     private string[] jointNames = new string[]
     {
-        "Hips",
-        "RightUpLeg",
-        "RightLeg",
-        "RightFoot",
-        "LeftUpLeg",
-        "LeftLeg",
-        "LeftFoot",
-        "Spine",
-        "Spine1",
-        "Spine2",
-        "Neck",
-        "Neck1",
         "Head",
-        "RightShoulder",
-        "RightArm",
-        "RightForeArm",
-        "RightHand",
-        "LeftShoulder",
-        "LeftArm",
-        "LeftForeArm",
-        "LeftHand"
+        "Shouldercentre",
+        "Spine",
+        "Leftshoulder",
+        "Leftelbow",
+        "Lefthand",
+        "Rightshoulder",
+        "Rightelbow",
+        "Righthand",
+        "Lefthip",
+        "Leftknee",
+        "Leftfoot",
+        "Righthip",
+        "Rightknee",
+        "Rightfoot",
+        "Hipcentre",
+        "Leftwrist",
+        "Leftankle",
+        "Rightwrist",
+        "Rightankle"
     };
 
     void Start()

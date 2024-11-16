@@ -3,8 +3,8 @@ using UnityEngine;
 public class BlinkDetection : MonoBehaviour
 {
     private OVRFaceExpressions faceExpressions;
-    public float eyesClosedLeft;
-    public float eyesClosedRight;
+    [HideInInspector] public float eyesClosedLeft;
+    [HideInInspector] public float eyesClosedRight;
 
     /*public GameObject cube1;
     public GameObject cube2;*/

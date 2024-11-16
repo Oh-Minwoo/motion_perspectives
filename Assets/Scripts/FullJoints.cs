@@ -95,11 +95,13 @@ public class FullJoints : MonoBehaviour
     
     public SocketListener socketListener;
     private List<Vector3[]> jointPositions = new List<Vector3[]>();
-    private List<GameObject[]> allJoints = new List<GameObject[]>();
+    private GameObject[] jointObjects;
+    private LineRenderer[] lineRenderers;
+    /*private List<GameObject[]> allJoints = new List<GameObject[]>();*/
     [HideInInspector] public GameObject[] currentGuidance;
-    private List<LineRenderer[]> allLines = new List<LineRenderer[]>(); // LineRenderer 참조를 저장할 배열
-    private int[] engagedJointList;
-    private int[] engagedLineList;
+    /*private List<LineRenderer[]> allLines = new List<LineRenderer[]>(); // LineRenderer 참조를 저장할 배열*/
+    /*private int[] engagedJointList;
+    private int[] engagedLineList;*/
 
     private Vector3 originalCameraPos = new Vector3(-99f, 1f, -3.5f);
     private bool isFirstPerson = false;
@@ -110,7 +112,7 @@ public class FullJoints : MonoBehaviour
     public RawImage leftImg;
     public RawImage rightImg;
     private Vector3 originalTextPos;
-    private int frameCount = 0;
+    
     private float[] transperencyArray;
     public Vector3 positionOffset = new Vector3(-100f, 1f, 0f);
     public Vector3 cameraPosOffset = new Vector3(0f, 0f, -0.01f);
@@ -124,16 +126,14 @@ public class FullJoints : MonoBehaviour
     public GameObject ovrInteractionPrefab;
     
     [Space(10)]
-    [Header("Deprecated. DO NO TOUCH")]
-    [SerializeField] private float percentage = 0.3f; // 0~1 사이의 값
-    [SerializeField] private int numOfGuidanceOnScreen = 5; // Continuous guidance에서 한 화면에 보여질 guidance 개수
-    // [SerializeField] private bool isDiscrete = true;
-    // [SerializeField] private float transparency = 0.5f;
-
-    private int dataIdx;
-
-    [HideInInspector]
-    public int dataLength;
+    [Header("For Smoothing Animation")]
+    public int smoothingFrames = 5; // 스무딩에 사용할 이전 프레임의 수
+    private List<Vector3[]> smoothJointPositions; // 스무딩된 조인트 위치를 저장할 리스트
+    
+    
+    /*public int dataLength;*/
+    private int currentFrame = 0;
+    private int frameCount = 1;
 
     private int[,] jointHierarchy = new int[,]
     {
@@ -171,10 +171,9 @@ public class FullJoints : MonoBehaviour
         MotionChange();
         previousMotions = motions;
         previousPerspectives = perspectives;
-        // transperencyArray = CalculateTransparency(numOfGuidanceOnScreen, 0.8f, 0.2f);
-        dataIdx = numOfGuidanceOnScreen;
         surveyPanel.SetActive(false);
         ovrInteractionPrefab.SetActive(false);
+        smoothJointPositions = new List<Vector3[]>(); // 스무딩된 위치를 저장할 리스트 초기화
     }
 
     // void OnValidate()
@@ -270,12 +269,7 @@ public class FullJoints : MonoBehaviour
     public void StartAnimation(bool isDemonstraction)
     {
         isDemo = isDemonstraction;
-        for (int i = 0; i < numOfGuidanceOnScreen; i++)
-        {
-            CreateJointsAndConnections(i);
-        }
-
-        currentGuidance = allJoints[0];
+        CreateJointsAndConnections();
         
         socketListener.isGuidanceStart = true;
         StartCoroutine(Countdown(3f));
@@ -332,8 +326,7 @@ public class FullJoints : MonoBehaviour
     {
         jointPositions = new List<Vector3[]>();
         string[] lines = csvFile.text.Split('\n');
-        dataLength = lines.Length;
-        for (int i=0; i<dataLength; i++)
+        for (int i=0; i < lines.Length; i++)
         {
             if (string.IsNullOrWhiteSpace(lines[i])) continue;
 
@@ -375,14 +368,13 @@ public class FullJoints : MonoBehaviour
     //     return values;
     // }
 
-    void CreateJointsAndConnections(int i)
+    void CreateJointsAndConnections()
     {
         // Assuming the first frame for visualization
 
-        Vector3[] positions = jointPositions[i];
-
-        GameObject[] jointObjects = new GameObject[positions.Length];
-        LineRenderer[] lineRenderers = new LineRenderer[jointHierarchy.Length]; // LineRenderer 객체 배열 초기화
+        Vector3[] positions = jointPositions[0];
+        jointObjects = new GameObject[positions.Length];
+        lineRenderers = new LineRenderer[jointHierarchy.GetLength(0)]; // LineRenderer 객체 배열 초기화
 
         for (int j = 0; j < positions.Length; j++)
         {
@@ -404,19 +396,18 @@ public class FullJoints : MonoBehaviour
 
             material.color = color;
             
-           
+           jointObjects[j] = jointObj;
 
-            MeshRenderer meshRenderer = jointObj.GetComponent<MeshRenderer>();
+            /*MeshRenderer meshRenderer = jointObj.GetComponent<MeshRenderer>();
             if (meshRenderer != null)
             {
                 meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 meshRenderer.receiveShadows = false;
             }
 
-            jointObjects[j] = jointObj;
+            jointObjects[j] = jointObj;*/
         }
-
-        allJoints.Add(jointObjects);
+        
 
 
         for (int k = 0; k < jointHierarchy.GetLength(0); k++)
@@ -425,7 +416,7 @@ public class FullJoints : MonoBehaviour
             GameObject childObj = jointObjects[jointHierarchy[k, 1]];
 
             // Create a line between the parent and child joints
-            LineRenderer line = new GameObject("Line" + i.ToString()).AddComponent<LineRenderer>();
+            LineRenderer line = new GameObject("Line" + k.ToString()).AddComponent<LineRenderer>();
             /*AssignTagToLine(line, i.ToString());*/
             line.material = new Material(Shader.Find("Particles/Standard Unlit")); // 재질 설정
             SetMaterialToTransparent(line.material);
@@ -438,13 +429,11 @@ public class FullJoints : MonoBehaviour
             line.SetPosition(0, parentObj.transform.position);
             line.SetPosition(1, childObj.transform.position);
 
-            line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            line.receiveShadows = false;
+            /*line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            line.receiveShadows = false;*/
 
             lineRenderers[k] = line;
         }
-
-        allLines.Add(lineRenderers);
     }
     
     private void SetMaterialToTransparent(Material material)
@@ -460,52 +449,50 @@ public class FullJoints : MonoBehaviour
     }
 
 
-    private void UpdateJointsPositions()
+    void UpdateJointsPositions()
     {
-        Vector3[] positions = jointPositions[dataIdx];
-        GameObject[] tempJoints = allJoints[0];
-        LineRenderer[] tempLines = allLines[0];
-        
-        allJoints.RemoveAt(0);
-        allLines.RemoveAt(0);
+        Vector3[] positions = jointPositions[currentFrame];
+        Vector3[] smoothedPositions = new Vector3[positions.Length];
 
-        /*DestroyObjectsByTag((dataIdx - numOfGuidanceOnScreen).ToString());*/
-
-        if (allJoints.Count > 0)
+        // 현재 프레임의 위치를 스무딩된 위치 리스트에 추가
+        smoothJointPositions.Add(positions);
+        // 리스트가 너무 길어지면 가장 오래된 위치를 제거
+        if (smoothJointPositions.Count > smoothingFrames)
         {
-            currentGuidance = allJoints[0];
+            smoothJointPositions.RemoveAt(0);
         }
-        
-        // string str = $"{++frameCount}/{jointPositions.Count}";
-        // frameLeft.text = str;
-        
-        
-        // GameObject[] jointObjects = new GameObject[positions.Length];
-        // LineRenderer[] lineRenderers = new LineRenderer[jointHierarchy.Length]; // LineRenderer 객체 배열 초기화
+
+
+
+        // 각 조인트에 대해 스무딩된 위치 계산
         for (int i = 0; i < positions.Length; i++)
         {
-            if (tempJoints[i] != null)
+            Vector3 sumPositions = Vector3.zero;
+            foreach (var framePositions in smoothJointPositions)
             {
-                tempJoints[i].transform.position = positions[i] + positionOffset;
+                sumPositions += framePositions[i];
             }
-        }
-        allJoints.Add(tempJoints);
+            smoothedPositions[i] = sumPositions / smoothJointPositions.Count;
 
-        for (int i = 0; i < jointHierarchy.GetLength(0); i++)
-        {
-            GameObject parentObj = tempJoints[jointHierarchy[i, 0]];
-            GameObject childObj = tempJoints[jointHierarchy[i, 1]];
-            if (tempLines[i] != null)
+            smoothedPositions[i] += positionOffset;
+
+            if (jointObjects[i] != null)
             {
-                tempLines[i].SetPosition(0, parentObj.transform.position);
-                tempLines[i].SetPosition(1, childObj.transform.position);
+                jointObjects[i].transform.position = smoothedPositions[i];
             }
         }
-        allLines.Add(tempLines);
-        
-        // MakeObjectsTransparent(allJoints[0], allLines[0], 1.0f);
-        // MakeObjectsTransparent(allJoints[1], allLines[1], 0.1f);
-        dataIdx++;
+
+        // 선(LineRenderer) 위치 업데이트
+        for (int i = 0; i < lineRenderers.Length; i++)
+        {
+            GameObject parentObj = jointObjects[jointHierarchy[i, 0]];
+            GameObject childObj = jointObjects[jointHierarchy[i, 1]];
+            if (lineRenderers[i] != null)
+            {
+                lineRenderers[i].SetPosition(0, smoothedPositions[jointHierarchy[i, 0]]);
+                lineRenderers[i].SetPosition(1, smoothedPositions[jointHierarchy[i, 1]]);
+            }
+        }
     }
 
     public IEnumerator UpdateAutomously()
@@ -514,9 +501,11 @@ public class FullJoints : MonoBehaviour
         float durationForOneFrame = duration / jointPositions.Count;
         while (true)
         {
-            if (dataIdx <= jointPositions.Count - 1)
+            if (frameCount <= jointPositions.Count - 1)
             {
                 UpdateJointsPositions();
+                currentFrame = (currentFrame + 1) % jointPositions.Count;
+                frameCount += 1;
             }
             // else if (dataIdx > jointPositions.Count - 1 && frameCount < dataIdx-1)
             // {
@@ -583,24 +572,32 @@ public class FullJoints : MonoBehaviour
 
     public void ResetJoints()
     {
-        dataIdx = numOfGuidanceOnScreen;
-        foreach (var joints in allJoints)
+        foreach (var joint in jointObjects)
+        {
+            Destroy(joint);
+        }
+        /*foreach (var joints in allJoints)
         {
             for (int i = 0; i < joints.GetLength(0); i++)
             {
                 Destroy(joints[i]);
             }
+        }*/
+        
+        foreach (var line in lineRenderers)
+        {
+            Destroy(line);
         }
 
-        foreach (var line in allLines)
+        /*foreach (var line in allLines)
         {
             for (int i = 0; i < line.GetLength(0); i++)
             {
                 Destroy(line[i]);
             }
-        }
-        allJoints = new List<GameObject[]>();
-        allLines = new List<LineRenderer[]>();
+        }*/
+        jointObjects = new GameObject[21];
+        lineRenderers = new LineRenderer[jointHierarchy.GetLength(0)];
         textUI.text = "";
     }
 
