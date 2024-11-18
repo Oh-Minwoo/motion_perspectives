@@ -26,7 +26,7 @@ public class SocketListener : MonoBehaviour
     public GameObject[] JointObjects => jointObjects;
     private LineRenderer[] lineRenderers; 
     
-    private bool firstDataProcessed = false;
+    public bool firstDataProcessed = false;
     private Vector3 rootCoord;
     
     private int[,] jointHierarchy = new int[,]
@@ -139,6 +139,7 @@ public class SocketListener : MonoBehaviour
                 //     realTimePerformanceMeasurement.GetJointPos(jointObjects, timestamp);
                 // }
                 firstDataProcessed = true;  // 첫 번째 데이터 처리 완료 표시
+                fullJoints.HeadJointsInitialize();
             }
             else
             {

@@ -85,7 +85,6 @@ public class EyeTrackingRay : MonoBehaviour
         {
             // 충돌 지점의 글로벌 위치 가져오기
             hitPoint = hit.point;
-            Debug.Log("Hit!");
 
             // LineRenderer의 끝점을 충돌 지점으로 설정하여 시각적으로 표시
             lineRenderer.SetPosition(1, hitPoint);

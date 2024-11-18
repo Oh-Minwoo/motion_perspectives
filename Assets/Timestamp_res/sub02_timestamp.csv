@@ -1,31 +1,25 @@
-Subject Name, Motion, Condition, Action, Unix Time
-sub02,badminton,Arms,start,1730770394.143830
-sub02,badminton,Arms,end,1730770398.655910
-sub02,badminton,Arms,start,1730770407.030550
-sub02,badminton,Arms,end,1730770411.517950
-sub02,badminton,Arms,start,1730770423.668800
-sub02,badminton,Arms,end,1730770428.169810
-sub02,badminton,Arms,start,1730770436.267380
-sub02,badminton,Arms,end,1730770440.794080
-sub02,badminton,Arms,start,1730770448.557610
-sub02,badminton,Arms,end,1730770453.072550
-sub02,badminton,Arms and Legs,start,1730770766.476640
-sub02,badminton,Arms and Legs,end,1730770770.988410
-sub02,badminton,Arms and Legs,start,1730770779.238720
-sub02,badminton,Arms and Legs,end,1730770783.718470
-sub02,badminton,Arms and Legs,start,1730770791.437430
-sub02,badminton,Arms and Legs,end,1730770795.946810
-sub02,badminton,Arms and Legs,start,1730770802.655070
-sub02,badminton,Arms and Legs,end,1730770807.168160
-sub02,badminton,Arms and Legs,start,1730770814.112510
-sub02,badminton,Arms and Legs,end,1730770818.613370
-sub02,badminton,Full Body,start,1730770968.880440
-sub02,badminton,Full Body,end,1730770973.392000
-sub02,badminton,Full Body,start,1730770981.573090
-sub02,badminton,Full Body,end,1730770986.100880
-sub02,badminton,Full Body,start,1730770993.434230
-sub02,badminton,Full Body,end,1730770997.920340
-sub02,badminton,Full Body,start,1730771004.947930
-sub02,badminton,Full Body,end,1730771009.447480
-sub02,badminton,Full Body,start,1730771017.585240
-sub02,badminton,Full Body,end,1730771022.100250
+Subject Name,Motion,Condition,Action,Unix Time
+sub02,taichi,3PP,start,1731831470.840010
+sub02,taichi,3PP,end,1731831479.148180
+sub02,taichi,3PP,start,1731831498.803820
+sub02,taichi,3PP,end,1731831507.090680
+sub02,taichi,3PP,start,1731831516.709470
+sub02,taichi,3PP,end,1731831525.228100
+sub02,taichi,Mirror,start,1731831678.031420
+sub02,taichi,Mirror,end,1731831686.177010
+sub02,taichi,Mirror,start,1731831707.280050
+sub02,taichi,Mirror,end,1731831715.536460
+sub02,taichi,Mirror,start,1731831728.805890
+sub02,taichi,Mirror,end,1731831737.022010
+sub02,taichi,1PP,start,1731831832.010720
+sub02,taichi,1PP,end,1731831840.169770
+sub02,taichi,1PP,start,1731831854.594110
+sub02,taichi,1PP,end,1731831862.735930
+sub02,taichi,1PP,start,1731831874.152740
+sub02,taichi,1PP,end,1731831882.338080
+sub02,taichi,Multi View,start,1731832277.584150
+sub02,taichi,Multi View,end,1731832286.240770
+sub02,taichi,Multi View,start,1731832295.832470
+sub02,taichi,Multi View,end,1731832304.377220
+sub02,taichi,Multi View,start,1731832325.468190
+sub02,taichi,Multi View,end,1731832334.317050

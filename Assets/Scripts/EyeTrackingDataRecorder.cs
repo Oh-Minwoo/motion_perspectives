@@ -92,6 +92,7 @@ public class EyeTrackingDataRecorder : MonoBehaviour
             EyeDataRecord newRecord = new EyeDataRecord
             {
                 timestamp = unityTs,
+                unityTimestamp = Time.time,
                 worldPosition = currentPosition,
                 planePosition = planePosition,
                 velocity = velocity,
@@ -130,7 +131,7 @@ public class EyeTrackingDataRecorder : MonoBehaviour
         {
             using (StreamWriter writer = new StreamWriter(filePath, false))
             {
-                writer.WriteLine("Timestamp,WorldX,WorldY,WorldZ,PlaneX,PlaneY,VelocityX,VelocityY,VelocityZ,BlinkLeft,BlinkRight,Confidence");
+                writer.WriteLine("Unix Timestamp,Unity Timestamp,WorldX,WorldY,WorldZ,PlaneX,PlaneY,VelocityX,VelocityY,VelocityZ,BlinkLeft,BlinkRight,Confidence");
             }
             Debug.Log($"새 CSV 파일을 헤더와 함께 초기화했습니다: {filePath}");
         }
@@ -153,7 +154,7 @@ public class EyeTrackingDataRecorder : MonoBehaviour
         {
             foreach (var record in recordsToSave)
             {
-                writer.WriteLine($"{record.timestamp}," +
+                writer.WriteLine($"{record.timestamp},{record.unityTimestamp}," +
                                  $"{record.worldPosition.x},{record.worldPosition.y},{record.worldPosition.z}," +
                                  $"{record.planePosition.x},{record.planePosition.y}," +
                                  $"{record.velocity.x},{record.velocity.y},{record.velocity.z}," +
@@ -168,6 +169,7 @@ public class EyeTrackingDataRecorder : MonoBehaviour
 public struct EyeDataRecord
 {
     public string timestamp;
+    public float unityTimestamp;
     public Vector3 worldPosition;
     public Vector2 planePosition;
     public Vector3 velocity;

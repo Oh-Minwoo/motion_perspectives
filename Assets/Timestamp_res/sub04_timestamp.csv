@@ -1,36 +1,25 @@
-Subject Name, Motion, Condition, Action, Unix Time
-sub04,badminton,Full Body,start,1730445852.554570
-sub04,badminton,Full Body,end,1730445857.110630
-sub04,badminton,Arms,start,1730445877.444440
-sub04,badminton,Arms,end,1730445881.928390
-sub04,badminton,Arms,start,1730445891.909650
-sub04,badminton,Arms,end,1730445896.414350
-sub04,badminton,Arms,start,1730445904.567140
-sub04,badminton,Arms,end,1730445909.067730
-sub04,badminton,Arms,start,1730445918.733360
-sub04,badminton,Arms,end,1730445923.233850
-sub04,badminton,Arms,start,1730445929.997350
-sub04,badminton,Arms,end,1730445934.511610
-sub04,badminton,Full Body,start,1730446503.401650
-sub04,badminton,Full Body,end,1730446507.927400
-sub04,badminton,Full Body,start,1730446516.982670
-sub04,badminton,Full Body,end,1730446521.496510
-sub04,badminton,Full Body,start,1730446532.538470
-sub04,badminton,Full Body,end,1730446537.066340
-sub04,badminton,Full Body,start,1730446991.833650
-sub04,badminton,Full Body,start,1730447070.845720
-sub04,badminton,Full Body,end,1730447075.330000
-sub04,badminton,Full Body,start,1730447082.341380
-sub04,badminton,Full Body,end,1730447086.899970
-sub04,badminton,Full Body,start,1730447094.052000
-sub04,badminton,Full Body,end,1730447098.552420
-sub04,badminton,Arms and Legs,start,1730447316.009190
-sub04,badminton,Arms and Legs,end,1730447320.507890
-sub04,badminton,Arms and Legs,start,1730447328.647590
-sub04,badminton,Arms and Legs,end,1730447333.146440
-sub04,badminton,Arms and Legs,start,1730447341.062340
-sub04,badminton,Arms and Legs,end,1730447345.591570
-sub04,badminton,Arms and Legs,start,1730447353.090610
-sub04,badminton,Arms and Legs,end,1730447357.605340
-sub04,badminton,Arms and Legs,start,1730447365.673750
-sub04,badminton,Arms and Legs,end,1730447370.173660
+Subject Name,Motion,Condition,Action,Unix Time
+sub04,taichi,Multi View,start,1731894084.765850
+sub04,taichi,Multi View,end,1731894092.964810
+sub04,taichi,Multi View,start,1731894104.783870
+sub04,taichi,Multi View,end,1731894113.208520
+sub04,taichi,Multi View,start,1731894123.746090
+sub04,taichi,Multi View,end,1731894132.027890
+sub04,taichi,1PP,start,1731894388.752960
+sub04,taichi,1PP,end,1731894396.883610
+sub04,taichi,1PP,start,1731894419.617290
+sub04,taichi,1PP,end,1731894427.776570
+sub04,taichi,1PP,start,1731894439.275860
+sub04,taichi,1PP,end,1731894447.408160
+sub04,taichi,Mirror,start,1731894645.770290
+sub04,taichi,Mirror,end,1731894653.898810
+sub04,taichi,Mirror,start,1731894665.511670
+sub04,taichi,Mirror,end,1731894673.821240
+sub04,taichi,Mirror,start,1731894682.342720
+sub04,taichi,Mirror,end,1731894690.499460
+sub04,taichi,3PP,start,1731894835.805180
+sub04,taichi,3PP,end,1731894843.949460
+sub04,taichi,3PP,start,1731894852.468230
+sub04,taichi,3PP,end,1731894860.682700
+sub04,taichi,3PP,start,1731894868.119250
+sub04,taichi,3PP,end,1731894876.164510

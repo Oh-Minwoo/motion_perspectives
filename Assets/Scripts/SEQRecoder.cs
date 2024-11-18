@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System;
 
 public class SEQRecoder : MonoBehaviour
 {
@@ -74,8 +76,8 @@ public class SEQRecoder : MonoBehaviour
     private void FilePathGenerator()
     {
         string csvFileName = $"{subName}_seq.csv";
-        /*csvFilePath = Path.Combine("C:\\Users\\Administrator\\Desktop\\Ohminwoo\\theis\\Assets\\SEQ_res", csvFileName);*/
-        csvFilePath = Path.Combine("D:\\OMW\\Research\\Thesis\\Implementation\\motion_perspective\\motion_perspectives\\Assets\\SEQ_res", csvFileName);
+        csvFilePath = Path.Combine("C:\\Users\\Administrator\\Desktop\\Ohminwoo\\theis\\Assets\\SEQ_res", csvFileName);
+        // csvFilePath = Path.Combine("D:\\OMW\\Research\\Thesis\\Implementation\\motion_perspective\\motion_perspectives\\Assets\\SEQ_res", csvFileName);
     }
     
     private void CheckAndCreateCSV(string path)
@@ -83,7 +85,7 @@ public class SEQRecoder : MonoBehaviour
         if (!File.Exists(path))
         {
             // 파일 생성
-            File.WriteAllText(path, "Subject Name,Motion,Condition,Score,Timestamp\n"); // 헤더 추가
+            File.WriteAllText(path, "Subject Name,Motion,Condition,Score,Timestamp [s],Timestamp\n"); // 헤더 추가
             Debug.Log("CSV 파일이 생성되었습니다: " + path);
         }
         else
@@ -122,14 +124,17 @@ public class SEQRecoder : MonoBehaviour
         exitPanel.SetActive(true);
         
         
-        SEQArray = new string[5];
+        SEQArray = new string[6];
         unixTime = GetComponent<UnixTime>();
+        DateTime now = DateTime.Now;
+        string formattedTime = now.ToString("yyyy-MM-dd_HH-mm-ss");
         string unityTs = unixTime.GetCurrentUnixTime();
         SEQArray[0] = subName;
         SEQArray[1] = motionName;
         SEQArray[2] = conditionName;
         SEQArray[3] = selectedOption.ToString();
         SEQArray[4] = unityTs;
+        SEQArray[5] = formattedTime;
         
         WriteToCSV(csvFilePath, SEQArray);
     }

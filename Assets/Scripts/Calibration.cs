@@ -8,6 +8,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Newtonsoft.Json; // JSON 파싱을 위한 Newtonsoft.Json 라이브러리 사용
+using TMPro;
+using UnityEngine.UI;
 
 public class Calibration : MonoBehaviour
 {
@@ -31,6 +33,8 @@ public class Calibration : MonoBehaviour
     public string subNum;
     private bool isFunctionRunning = false;
     private MotionScaler motionScaler;
+    public TMP_Text textUI;
+    public RawImage tPoseExample;
     
     private int[,] jointHierarchy = new int[,]
     {
@@ -94,6 +98,7 @@ public class Calibration : MonoBehaviour
 
         /*StartCoroutine(ProcessDataAt30Hz());*/
         motionScaler = GetComponent<MotionScaler>();
+        tPoseExample.gameObject.SetActive(false);
     }
 
     private void OnDataReceived(IAsyncResult result)
@@ -209,39 +214,87 @@ public class Calibration : MonoBehaviour
     
     IEnumerator Countdown(float countdownTime)
     {
+        tPoseExample.gameObject.SetActive(true);
         float remainingTime = countdownTime;
 
         while (remainingTime > 0)
         {
-            Debug.Log($"Countdown: {remainingTime:F1} seconds"); // 소수점 첫째 자리까지 시간 표시
             remainingTime -= Time.deltaTime;
+            if (remainingTime <= countdownTime & remainingTime > 2)
+            {
+                string count = $"T-Pose를 취해주세요!\n\n3";
+                textUI.text = count;
+            }
+            else if (remainingTime <= 2 & remainingTime > 1)
+            {
+                string count = $"T-Pose를 취해주세요!\n\n2";
+                textUI.text = count;
+            }
+            else if (remainingTime <= 1 & remainingTime > 0)
+            {
+                string count = $"T-Pose를 취해주세요!\n\n1";
+                textUI.text = count;
+            }
             yield return null; // 다음 프레임까지 대기
         }
         
-        isFunctionRunning = true; // 카운트다운이 끝나면 함수 실행 플래그 설정
-        StartCoroutine(ExcuteCalibrationForSeconds(1.5f));
-        
+        textUI.text = $"Start!";
+        StartCoroutine(Countdown1s());
     }
-
-    private IEnumerator ExcuteCalibrationForSeconds(float duration)
+    
+    IEnumerator Countdown1s()
     {
-        Debug.Log("Calibration Starts");
-        float elapsedTime = 0f;
-        isFunctionRunning = true;
+        float remainingTime = 1.5f;
 
-        while (elapsedTime < duration)
+        while (remainingTime > 0)
         {
+            remainingTime -= Time.deltaTime;
             List<float> calibrationData = new List<float>(receivedDataList);
             calibrationList.Add(calibrationData.ToArray());
-            elapsedTime += Time.deltaTime;
             yield return null; // 다음 프레임까지 대기
         }
 
-        isFunctionRunning = false;
-        Debug.Log("Calibration Ends");
+        textUI.text = "스케일링이\n종료되었습니다.";
+        tPoseExample.gameObject.SetActive(false);
         SaveCalibration($"{subNum}_calibration_data.csv");
         motionScaler.MotionScaling(calibrationList);
     }
+    
+    // IEnumerator Countdown(float countdownTime)
+    // {
+    //     float remainingTime = countdownTime;
+    //
+    //     while (remainingTime > 0)
+    //     {
+    //         Debug.Log($"Countdown: {remainingTime:F1} seconds"); // 소수점 첫째 자리까지 시간 표시
+    //         remainingTime -= Time.deltaTime;
+    //         yield return null; // 다음 프레임까지 대기
+    //     }
+    //     
+    //     isFunctionRunning = true; // 카운트다운이 끝나면 함수 실행 플래그 설정
+    //     StartCoroutine(ExcuteCalibrationForSeconds(1.5f));
+    //     
+    // }
+    //
+    // private IEnumerator ExcuteCalibrationForSeconds(float duration)
+    // {
+    //     Debug.Log("Calibration Starts");
+    //     float elapsedTime = 0f;
+    //     isFunctionRunning = true;
+    //
+    //     while (elapsedTime < duration)
+    //     {
+    //         List<float> calibrationData = new List<float>(receivedDataList);
+    //         calibrationList.Add(calibrationData.ToArray());
+    //         elapsedTime += Time.deltaTime;
+    //         yield return null; // 다음 프레임까지 대기
+    //     }
+    //
+    //     isFunctionRunning = false;
+    //     Debug.Log("Calibration Ends");
+    //     SaveCalibration($"{subNum}_calibration_data.csv");
+    //     motionScaler.MotionScaling(calibrationList);
+    // }
     
     // private void ReadDataFromServer()
     // {
@@ -260,7 +313,7 @@ public class Calibration : MonoBehaviour
     
     private void SaveCalibration(string fileName)
     {
-        string path = Path.Combine("C:\\Users\\HCIS\\Desktop\\OhMinwoo_Thesis\\ActionNet Driving\\recording_data\\Calibration_data", fileName); // 파일 경로 지정
+        string path = Path.Combine("C:\\Users\\Administrator\\Desktop\\Ohminwoo\\theis\\Assets\\Data\\JointOffsetData", fileName); // 파일 경로 지정
 
         using (StreamWriter writer = new StreamWriter(path))
         {

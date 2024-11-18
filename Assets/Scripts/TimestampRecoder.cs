@@ -49,8 +49,8 @@ public class TimestampRecoder : MonoBehaviour
     private void FilePathGenerator()
     {
         string csvFileName = $"{subName}_timestamp.csv";
-        // csvFilePath = Path.Combine("C:\\Users\\Administrator\\Desktop\\Ohminwoo\\theis\\Assets\\Timestamp_res", csvFileName);
-        csvFilePath = Path.Combine("D:\\OMW\\Research\\Thesis\\Implementation\\motion_perspective\\motion_perspectives\\Assets\\Timestamp_res", csvFileName);
+        csvFilePath = Path.Combine("C:\\Users\\Administrator\\Desktop\\Ohminwoo\\theis\\Assets\\Timestamp_res", csvFileName);
+        // csvFilePath = Path.Combine("D:\\OMW\\Research\\Thesis\\Implementation\\motion_perspective\\motion_perspectives\\Assets\\Timestamp_res", csvFileName);
     }
     
     private void CheckAndCreateCSV(string path)

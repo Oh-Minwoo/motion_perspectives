@@ -1,32 +1,25 @@
-Subject Name, Motion, Condition, Action, Unix Time
-sub05,badminton,Arms and Legs,start,1730785135.080550
-sub05,badminton,Arms and Legs,end,1730785139.579280
-sub05,badminton,Arms and Legs,start,1730785152.243510
-sub05,badminton,Arms and Legs,end,1730785156.729510
-sub05,badminton,Arms and Legs,start,1730785164.174020
-sub05,badminton,Arms and Legs,end,1730785168.658950
-sub05,badminton,Arms and Legs,start,1730785175.241220
-sub05,badminton,Arms and Legs,end,1730785179.768400
-sub05,badminton,Arms and Legs,start,1730785187.990340
-sub05,badminton,Arms and Legs,end,1730785192.490700
-sub05,badminton,Arms,start,1730785471.428600
-sub05,badminton,Arms,end,1730785475.928440
-sub05,badminton,Arms,start,1730785484.565880
-sub05,badminton,Arms,end,1730785489.121080
-sub05,badminton,Arms,start,1730785496.067240
-sub05,badminton,Arms,end,1730785500.553070
-sub05,badminton,Arms,start,1730785507.345160
-sub05,badminton,Arms,end,1730785511.858360
-sub05,badminton,Arms,start,1730785519.635520
-sub05,badminton,Arms,end,1730785524.122120
-sub05,badminton,Full Body,start,1730785709.461860
-sub05,badminton,Full Body,end,1730785713.960490
-sub05,badminton,Full Body,start,1730785721.224570
-sub05,badminton,Full Body,end,1730785725.724990
-sub05,badminton,Full Body,start,1730785732.684760
-sub05,badminton,Full Body,end,1730785737.169010
-sub05,badminton,Full Body,start,1730785753.848990
-sub05,badminton,Full Body,end,1730785758.362610
-sub05,badminton,Full Body,start,1730785765.390530
-sub05,badminton,Full Body,end,1730785769.861950
-
+Subject Name,Motion,Condition,Action,Unix Time
+sub05,taichi,1PP,start,1731905847.008700
+sub05,taichi,1PP,end,1731905855.113990
+sub05,taichi,1PP,start,1731905865.482950
+sub05,taichi,1PP,end,1731905873.657130
+sub05,taichi,1PP,start,1731905886.115540
+sub05,taichi,1PP,end,1731905894.262250
+sub05,taichi,3PP,start,1731905946.884920
+sub05,taichi,3PP,end,1731905955.153640
+sub05,taichi,3PP,start,1731905970.384530
+sub05,taichi,3PP,end,1731905978.542440
+sub05,taichi,3PP,start,1731905987.454740
+sub05,taichi,3PP,end,1731905995.654480
+sub05,taichi,Mirror,start,1731906069.259660
+sub05,taichi,Mirror,end,1731906077.487530
+sub05,taichi,Mirror,start,1731906086.830110
+sub05,taichi,Mirror,end,1731906095.072840
+sub05,taichi,Mirror,start,1731906103.439600
+sub05,taichi,Mirror,end,1731906111.695530
+sub05,taichi,Multi View,start,1731906154.184240
+sub05,taichi,Multi View,end,1731906162.382980
+sub05,taichi,Multi View,start,1731906174.663830
+sub05,taichi,Multi View,end,1731906182.960250
+sub05,taichi,Multi View,start,1731906191.499710
+sub05,taichi,Multi View,end,1731906199.889790

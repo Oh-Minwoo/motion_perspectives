@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
 using System.IO;
+using Oculus.Interaction;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
@@ -84,9 +85,9 @@ public class FullJoints : MonoBehaviour
     [Space(10)]
     [Header("System Settings")]
     
-    public TextAsset frontalCSV;
-    public TextAsset peripheralCSV;
-    public TextAsset taichiCSV;
+    // public TextAsset frontalCSV;
+    // public TextAsset peripheralCSV;
+    private TextAsset taichiCSV;
 
     [Space(10)] public float speed = 0.5f;
     
@@ -112,6 +113,7 @@ public class FullJoints : MonoBehaviour
     public RawImage leftImg;
     public RawImage rightImg;
     private Vector3 originalTextPos;
+    private Vector3 originalSurveyPos;
     
     private float[] transperencyArray;
     public Vector3 positionOffset = new Vector3(-100f, 1f, 0f);
@@ -119,10 +121,12 @@ public class FullJoints : MonoBehaviour
     [HideInInspector] public int mirrored = 1;
     public Color color;
     public GameObject camera;
+    public Camera centerEye;
     
     [Space(10)]
     [Header("Tools for SEQ Survey")]
     public GameObject surveyPanel;
+    public GameObject exitPanel;
     public GameObject ovrInteractionPrefab;
     
     [Space(10)]
@@ -130,6 +134,8 @@ public class FullJoints : MonoBehaviour
     public int smoothingFrames = 5; // 스무딩에 사용할 이전 프레임의 수
     private List<Vector3[]> smoothJointPositions; // 스무딩된 조인트 위치를 저장할 리스트
     
+    private string[] headJointNames = { "Head", "Neck", "Neck1", "Line10", "Line11" };
+    private GameObject[] headJointsObj;
     
     /*public int dataLength;*/
     private int currentFrame = 0;
@@ -164,8 +170,10 @@ public class FullJoints : MonoBehaviour
 
     void Start()
     {
+        LoadAndReadCSV();
         originalCameraPos = camera.transform.position;
         originalTextPos = textUI.transform.position;
+        originalSurveyPos = surveyPanel.transform.position;
         timestampRecoder = GetComponent<TimestampRecoder>();
         PerspectiveChange();
         MotionChange();
@@ -174,6 +182,21 @@ public class FullJoints : MonoBehaviour
         surveyPanel.SetActive(false);
         ovrInteractionPrefab.SetActive(false);
         smoothJointPositions = new List<Vector3[]>(); // 스무딩된 위치를 저장할 리스트 초기화
+        headJointsObj = new GameObject[headJointNames.Length];
+    }
+
+    private void LoadAndReadCSV()
+    {
+        string filePath = Path.Combine(Application.streamingAssetsPath, $"Scaled_data/{subName}_scaled_motion.csv");
+        if (File.Exists(filePath))
+        {
+            string csvContent = File.ReadAllText(filePath);
+            taichiCSV = new TextAsset(csvContent);
+        }
+        else
+        {
+            Debug.LogError($"파일을 찾을 수 없습니다: {filePath}");
+        }
     }
 
     // void OnValidate()
@@ -190,15 +213,15 @@ public class FullJoints : MonoBehaviour
     private void MotionChange()
     {
         
-        if (motions.frontal)
-        {
-            ReadCSV(frontalCSV);
-        }
-        else if (motions.peripheral)
-        {
-            ReadCSV(peripheralCSV);
-        }
-        else if (motions.taichi)
+        // if (motions.frontal)
+        // {
+        //     ReadCSV(frontalCSV);
+        // }
+        // else if (motions.peripheral)
+        // {
+        //     ReadCSV(peripheralCSV);
+        // }
+        if (motions.taichi)
         {
             ReadCSV(taichiCSV);
         }
@@ -206,41 +229,81 @@ public class FullJoints : MonoBehaviour
 
     private void PerspectiveChange()
     {
-        if (perspectives.firstPerson)
+        if (socketListener.firstDataProcessed)
         {
-            isFirstPerson = true;
-            textUI.transform.position += new Vector3(1.5f, 0f, 7f);
-            mirrored = 1;
-            leftImg.gameObject.SetActive(false);
-            rightImg.gameObject.SetActive(false);
-            
+            if (perspectives.firstPerson)
+            {
+                isFirstPerson = true;
+                textUI.transform.position += new Vector3(1.5f, 0f, 5f);
+                surveyPanel.transform.position += new Vector3(0f, 0f, 5f);
+                exitPanel.transform.position += new Vector3(0f, 0f, 5f);
+                mirrored = 1;
+                ReadCSV(taichiCSV);
+                leftImg.gameObject.SetActive(false);
+                rightImg.gameObject.SetActive(false);
+                HeadJointController(true);
+            }
+            else if (perspectives.thirdPerson)
+            {
+                isFirstPerson = false;
+                camera.transform.position = originalCameraPos;
+                textUI.transform.position = originalTextPos;
+                surveyPanel.transform.position = originalSurveyPos;
+                exitPanel.transform.position = originalSurveyPos;
+                mirrored = 1;
+                ReadCSV(taichiCSV);
+                leftImg.gameObject.SetActive(false);
+                rightImg.gameObject.SetActive(false);
+                HeadJointController(false);
+            }
+            else if (perspectives.mirror)
+            {
+                isFirstPerson = false;
+                camera.transform.position = originalCameraPos;
+                textUI.transform.position = originalTextPos;
+                mirrored = -1;
+                ReadCSV(taichiCSV);
+                leftImg.gameObject.SetActive(false);
+                rightImg.gameObject.SetActive(false);
+                HeadJointController(false);
+            }
+            else if (perspectives.multiView)
+            {
+                isFirstPerson = false;
+                camera.transform.position = originalCameraPos;
+                textUI.transform.position = originalTextPos;
+                mirrored = 1;
+                ReadCSV(taichiCSV);
+                leftImg.gameObject.SetActive(true);
+                rightImg.gameObject.SetActive(true);
+                HeadJointController(false);
+            }
         }
-        else if (perspectives.thirdPerson)
+    }
+
+    public void HeadJointsInitialize()
+    {
+        for (int i = 0; i < headJointNames.Length; i++)
         {
-            isFirstPerson = false;
-            camera.transform.position = originalCameraPos;
-            textUI.transform.position = originalTextPos;
-            mirrored = 1;
-            leftImg.gameObject.SetActive(false);
-            rightImg.gameObject.SetActive(false);
+            headJointsObj[i] = GameObject.Find(headJointNames[i]);
         }
-        else if (perspectives.mirror)
+    }
+
+    private void HeadJointController(bool isFirst)
+    {
+        if (isFirst)
         {
-            isFirstPerson = false;
-            camera.transform.position = originalCameraPos;
-            textUI.transform.position = originalTextPos;
-            mirrored = -1;
-            leftImg.gameObject.SetActive(false);
-            rightImg.gameObject.SetActive(false);
+            foreach (var joint in headJointsObj)
+            {
+                joint.SetActive(false);
+            }
         }
-        else if (perspectives.multiView)
+        else
         {
-            isFirstPerson = false;
-            camera.transform.position = originalCameraPos;
-            textUI.transform.position = originalTextPos;
-            mirrored = 1;
-            leftImg.gameObject.SetActive(true);
-            rightImg.gameObject.SetActive(true);
+            foreach (var joint in headJointsObj)
+            {
+                joint.SetActive(true);
+            }
         }
     }
 
@@ -259,7 +322,11 @@ public class FullJoints : MonoBehaviour
         }
         if (isFirstPerson)
         {
-            camera.transform.position = socketListener.headPosition + cameraPosOffset;
+            Vector3 child = centerEye.gameObject.transform.localPosition;
+            Vector3 headPosition = socketListener.headPosition;
+            Vector3 cameraPos = new Vector3(headPosition.x, headPosition.y - child.y, headPosition.z);
+
+            camera.transform.position = cameraPos + cameraPosOffset;
         }
     }
 
@@ -311,7 +378,7 @@ public class FullJoints : MonoBehaviour
     
     IEnumerator Countdown1s()
     {
-        float remainingTime = 1f;
+        float remainingTime = 1.5f;
 
         while (remainingTime > 0)
         {
@@ -378,61 +445,126 @@ public class FullJoints : MonoBehaviour
 
         for (int j = 0; j < positions.Length; j++)
         {
-            // Create a sphere at each joint position
-            GameObject jointObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            /*AssignTag(jointObj, i.ToString());*/
-            jointObj.transform.position = positions[j] + positionOffset;
-            jointObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f); // Adjust size as needed
-
-            Renderer renderer = jointObj.GetComponent<Renderer>();
-            Material material = renderer.material;
-
-            // Shader를 Standard Shader로 변경
-            material.shader = Shader.Find("Standard");
-            if (material != null)
+            if (isFirstPerson)
             {
-                SetMaterialToTransparent(material);
-            }
+                if (j != 10 && j != 11 && j != 12)
+                {
+                    GameObject jointObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    /*AssignTag(jointObj, i.ToString());*/
+                    jointObj.transform.position = positions[j] + positionOffset;
+                    jointObj.transform.localScale = new Vector3(0.12f, 0.12f, 0.12f); // Adjust size as needed
 
-            material.color = color;
+                    Renderer renderer = jointObj.GetComponent<Renderer>();
+                    Material material = renderer.material;
+
+                    // Shader를 Standard Shader로 변경
+                    material.shader = Shader.Find("Standard");
+                    if (material != null)
+                    {
+                        SetMaterialToTransparent(material);
+                    }
+
+                    material.color = color;
             
-           jointObjects[j] = jointObj;
+                    jointObjects[j] = jointObj;
 
-            /*MeshRenderer meshRenderer = jointObj.GetComponent<MeshRenderer>();
-            if (meshRenderer != null)
-            {
-                meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-                meshRenderer.receiveShadows = false;
+                    /*MeshRenderer meshRenderer = jointObj.GetComponent<MeshRenderer>();
+                    if (meshRenderer != null)
+                    {
+                        meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                        meshRenderer.receiveShadows = false;
+                    }
+
+                    jointObjects[j] = jointObj;*/
+                }
             }
+            else
+            {
+                GameObject jointObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                /*AssignTag(jointObj, i.ToString());*/
+                jointObj.transform.position = positions[j] + positionOffset;
+                jointObj.transform.localScale = new Vector3(0.12f, 0.12f, 0.12f); // Adjust size as needed
 
-            jointObjects[j] = jointObj;*/
+                Renderer renderer = jointObj.GetComponent<Renderer>();
+                Material material = renderer.material;
+
+                // Shader를 Standard Shader로 변경
+                material.shader = Shader.Find("Standard");
+                if (material != null)
+                {
+                    SetMaterialToTransparent(material);
+                }
+
+                material.color = color;
+            
+                jointObjects[j] = jointObj;
+
+                /*MeshRenderer meshRenderer = jointObj.GetComponent<MeshRenderer>();
+                if (meshRenderer != null)
+                {
+                    meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                    meshRenderer.receiveShadows = false;
+                }
+
+                jointObjects[j] = jointObj;*/
+            }
         }
         
 
 
         for (int k = 0; k < jointHierarchy.GetLength(0); k++)
         {
-            GameObject parentObj = jointObjects[jointHierarchy[k, 0]];
-            GameObject childObj = jointObjects[jointHierarchy[k, 1]];
+            if (isFirstPerson)
+            {
+                if (k != 9 && k != 10 && k != 11)
+                {
+                    GameObject parentObj = jointObjects[jointHierarchy[k, 0]];
+                    GameObject childObj = jointObjects[jointHierarchy[k, 1]];
 
-            // Create a line between the parent and child joints
-            LineRenderer line = new GameObject("Line" + k.ToString()).AddComponent<LineRenderer>();
-            /*AssignTagToLine(line, i.ToString());*/
-            line.material = new Material(Shader.Find("Particles/Standard Unlit")); // 재질 설정
-            SetMaterialToTransparent(line.material);
-            line.startColor = color;
-            line.endColor = color;
-            // line.material.color = color;
-            line.startWidth = 0.08f;
-            line.endWidth = 0.08f;
-            line.positionCount = 2;
-            line.SetPosition(0, parentObj.transform.position);
-            line.SetPosition(1, childObj.transform.position);
+                    // Create a line between the parent and child joints
+                    LineRenderer line = new GameObject("Line" + k.ToString()).AddComponent<LineRenderer>();
+                    /*AssignTagToLine(line, i.ToString());*/
+                    line.material = new Material(Shader.Find("Particles/Standard Unlit")); // 재질 설정
+                    SetMaterialToTransparent(line.material);
+                    line.startColor = color;
+                    line.endColor = color;
+                    // line.material.color = color;
+                    line.startWidth = 0.1f;
+                    line.endWidth = 0.1f;
+                    line.positionCount = 2;
+                    line.SetPosition(0, parentObj.transform.position);
+                    line.SetPosition(1, childObj.transform.position);
 
-            /*line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            line.receiveShadows = false;*/
+                    /*line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                    line.receiveShadows = false;*/
 
-            lineRenderers[k] = line;
+                    lineRenderers[k] = line;
+                }
+            }
+            else
+            {
+                GameObject parentObj = jointObjects[jointHierarchy[k, 0]];
+                GameObject childObj = jointObjects[jointHierarchy[k, 1]];
+
+                // Create a line between the parent and child joints
+                LineRenderer line = new GameObject("Line" + k.ToString()).AddComponent<LineRenderer>();
+                /*AssignTagToLine(line, i.ToString());*/
+                line.material = new Material(Shader.Find("Particles/Standard Unlit")); // 재질 설정
+                SetMaterialToTransparent(line.material);
+                line.startColor = color;
+                line.endColor = color;
+                // line.material.color = color;
+                line.startWidth = 0.1f;
+                line.endWidth = 0.1f;
+                line.positionCount = 2;
+                line.SetPosition(0, parentObj.transform.position);
+                line.SetPosition(1, childObj.transform.position);
+
+                /*line.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                line.receiveShadows = false;*/
+
+                lineRenderers[k] = line;
+            }
         }
     }
     
@@ -513,11 +645,13 @@ public class FullJoints : MonoBehaviour
             // }
             else
             {
+                
                 string str = "동작이\n종료되었습니다.";
                 textUI.text = str;
                 Debug.Log("Motion is over");
                 if (!isDemo)
                 {
+                    StartCoroutine(WaitOneSecond());
                     timestampRecoder.TimestampRecording("end", -1);
                 }
                 
@@ -526,6 +660,11 @@ public class FullJoints : MonoBehaviour
             yield return new WaitForSeconds(durationForOneFrame);
         }
         
+    }
+
+    private IEnumerator WaitOneSecond()
+    {
+        yield return new WaitForSeconds(1);
     }
 
     // private void UpdateWithoutAppending()
@@ -598,6 +737,8 @@ public class FullJoints : MonoBehaviour
         }*/
         jointObjects = new GameObject[21];
         lineRenderers = new LineRenderer[jointHierarchy.GetLength(0)];
+        currentFrame = 0;
+        frameCount = 1;
         textUI.text = "";
     }
 

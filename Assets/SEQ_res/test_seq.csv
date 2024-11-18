@@ -1,2 +1,5 @@
-Subject Name,Motion,Condition,Score,Timestamptest,frontal,3PP,2,1731589709.953660
-test,frontal,3PP,3,1731643737.364090
+Subject Name,Motion,Condition,Score,Timestamp [s],Timestamp
+test,taichi,1PP,6,1731776651.777880,2024-11-17_02-04-11
+test,taichi,3PP,3,1731776701.651870,2024-11-17_02-05-01
+test,taichi,Mirror,2,1731776752.036300,2024-11-17_02-05-52
+test,taichi,Multi View,1,1731776785.922600,2024-11-17_02-06-25
