@@ -587,7 +587,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   positionOffset: {x: -100, y: 1, z: 0}
-  subNum: sub06
+  subNum: sub08
   textUI: {fileID: 131160640}
   tPoseExample: {fileID: 1388923233}
 --- !u!114 &238803216
@@ -607,7 +607,7 @@ MonoBehaviour:
   egocentricCSV: {fileID: 4900000, guid: a5bcdec7baa92c44fa924705fca1078b, type: 3}
   jointOffsetsJSON: {fileID: 4900000, guid: f8df48ab1921dc64ebb38b0fb1aa7680, type: 3}
   practiceJointOffsetsJSON: {fileID: 4900000, guid: 13b640f96cc0af447bb56b1a8cf59137, type: 3}
-  subjectNumber: sub06
+  subjectNumber: sub08
 --- !u!1 &254484475
 GameObject:
   m_ObjectHideFlags: 0

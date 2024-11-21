@@ -120,6 +120,10 @@ public class SocketListener : MonoBehaviour
         {
             AlignJoints();
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            AlignJoints();
+        }
         // 파싱된 데이터 출력 (리스트로 변환된 데이터 사용 가능)
         if (receivedDataList != null && receivedDataList.Count > 0)
         {
